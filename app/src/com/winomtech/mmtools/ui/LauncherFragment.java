@@ -1,8 +1,7 @@
-package com.winomtech.mmtools.app.ui;
+package com.winomtech.mmtools.ui;
 
-import com.winomtech.mmtools.app.R;
+import com.winomtech.mmtools.R;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -10,10 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,31 +22,26 @@ public class LauncherFragment extends Fragment {
 	private static final String TAG = LauncherFragment.class.getSimpleName();
 
 	private static class EntryInfo {
-		public String	name;
-		public String	className;
+		public int 		resId;
+		public Class<?>	clazz;
 		
-		public EntryInfo(String name, String className) {
-			this.name = name;
-			this.className = className;
+		public EntryInfo(int resId, Class<?> clazz) {
+			this.resId = resId;
+			this.clazz = clazz;
 		}
 	}
 
 	private static List<EntryInfo> sEntryInfoList = null;
 
-	private static void initList(Context context) {
+	static {
 		sEntryInfoList = new ArrayList<EntryInfo>();
-		sEntryInfoList.add(new EntryInfo(context.getString(R.string.str_copy_traces_to_sdcard),
-				CopyTracesFragment.class.getCanonicalName()));
-		sEntryInfoList.add(new EntryInfo(context.getString(R.string.str_app_list),
-				PackagesFragment.class.getCanonicalName()));
+		sEntryInfoList.add(new EntryInfo(R.string.entry_copy_traces_to_sdcard, CopyTracesFragment.class));
+		sEntryInfoList.add(new EntryInfo(R.string.entry_app_list, PackagesFragment.class));
+		sEntryInfoList.add(new EntryInfo(R.string.entry_record_play, AudioFragment.class));
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		if (null == sEntryInfoList) {
-			initList(getActivity());
-		}
-
 		View rootView = inflater.inflate(R.layout.fragment_launcher, container, false);
 		ListView lvEntries = (ListView) rootView.findViewById(R.id.lv_entry_list);
 		lvEntries.setAdapter(new EntryAdapter());
@@ -61,8 +53,7 @@ public class LauncherFragment extends Fragment {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			try {
-				Class<?> clazz = Class.forName(sEntryInfoList.get(position).className);
-				Constructor<?> construct = clazz.getConstructor();
+				Constructor<?> construct = sEntryInfoList.get(position).clazz.getConstructor();
 				Fragment object = (Fragment) construct.newInstance();
 
 				FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -97,7 +88,7 @@ public class LauncherFragment extends Fragment {
 				convertView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_entry_item, parent, false);
 			}
 			TextView tvName = (TextView) convertView.findViewById(R.id.tv_entry_name);
-			tvName.setText(sEntryInfoList.get(position).name);
+			tvName.setText(sEntryInfoList.get(position).resId);
 			return convertView;
 		}
 	}

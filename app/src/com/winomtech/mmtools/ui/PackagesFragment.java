@@ -1,4 +1,4 @@
-package com.winomtech.mmtools.app.ui;
+package com.winomtech.mmtools.ui;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.winomtech.mmtools.app.R;
+import com.winomtech.mmtools.R;
 
 import java.util.ArrayList;
 import java.util.List;

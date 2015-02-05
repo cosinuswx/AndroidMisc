@@ -1,12 +1,12 @@
 <resources>
 
 	<string name="app_name">MMTools</string>
-	<string name="str_split_profile">拆分profile文件</string>
-	<string
-		name="str_progressing"
-		formatted="false">正在处理中，第%d个（共%d个）</string>
-	<string name="str_finish">处理完成！</string>
-	<string name="str_copy_traces_to_sdcard">复制traces.txt到sd卡</string>
-	<string name="str_app_list">APP列表</string>
+
+	<string name="entry_copy_traces_to_sdcard">复制traces.txt到sd卡</string>
+	<string name="entry_app_list">APP列表</string>
+	<string name="entry_record_play">录音和播放</string>
+
 	<string name="str_please_waitting">正在处理中，请稍候&#8230;</string>
+	<string name="str_progressing" formatted="false">正在处理中，第%d个（共%d个）</string>
+	<string name="str_finish">处理完成！</string>
 </resources>

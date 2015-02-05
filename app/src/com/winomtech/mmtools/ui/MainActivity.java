@@ -1,9 +1,9 @@
-package com.winomtech.mmtools.app.ui;
+package com.winomtech.mmtools.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
-import com.winomtech.mmtools.app.R;
+import com.winomtech.mmtools.R;
 
 public class MainActivity extends ActionBarActivity {
 	private final static String TAG = MainActivity.class.getSimpleName();

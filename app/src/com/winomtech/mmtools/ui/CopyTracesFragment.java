@@ -1,10 +1,4 @@
-package com.winomtech.mmtools.app.ui;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
+package com.winomtech.mmtools.ui;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,7 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.winomtech.mmtools.app.R;
+import com.winomtech.mmtools.R;
+import com.winomtech.mmtools.utils.MiscUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 
 public class CopyTracesFragment extends Fragment {
 	private TextView	mProgressText;
@@ -60,27 +60,24 @@ public class CopyTracesFragment extends Fragment {
 		public void run() {
 			String fromPath = "/data/anr";
 			String toPath = Environment.getExternalStorageDirectory() + "/anr/";
-			File dir = new File(toPath);
-			if (false == dir.exists()) {
-				dir.mkdir();
-			}
+			MiscUtils.mkdirs(toPath);
 
 			File file = new File(fromPath);
 			String[] files = file.list();
 			if (null == files || 0 == files.length) {
-				sendProgress(-1, -1);
+				sendProgress();
 				return;
 			}
 
 			for (int j = 0; j < files.length && !mStoped; ++j) {
-				sendProgress(j, files.length);
+				sendProgress();
 				if (!files[j].equals(".") && !files[j].equals("..")) {
 					copyFile(fromPath + "/" + files[j], toPath + "/" + files[j]);
 				}
 			}
 		}
 		
-		private void sendProgress(int cur, int tot) {
+		private void sendProgress() {
 			Message msg = new Message();
 			msg.arg1 = -1;
 			msg.arg2 = -1;
@@ -103,8 +100,8 @@ public class CopyTracesFragment extends Fragment {
 			} catch (Exception e) {
 				return -1;
 			} finally {
-				if (s != null) try { s.close(); } catch (IOException e) {}
-				if (d != null) try { d.close(); } catch (IOException e) {}
+				MiscUtils.safeClose(s);
+				MiscUtils.safeClose(d);
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.winomtech.mmtools.app"
+	package="com.winomtech.mmtools"
 	android:versionCode="1"
 	android:versionName="1.0">
 
@@ -16,7 +16,7 @@
 		android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
 
 		<activity
-			android:name="com.winomtech.mmtools.app.ui.MainActivity"
+			android:name="com.winomtech.mmtools.ui.MainActivity"
 			android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

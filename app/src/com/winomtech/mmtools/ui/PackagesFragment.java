@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,18 +16,28 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.winomtech.mmtools.R;
+import com.winomtech.mmtools.asynccomponent.ITask;
+import com.winomtech.mmtools.asynccomponent.TaskExecutor;
+import com.winomtech.mmtools.utils.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @since 2015-02-04
  * @author kevinhuang 
  */
 public class PackagesFragment extends Fragment {
-	private ListView		mListView;
-	private PackageAdapter	mPackageAdapter;
-	private LinearLayout	mWattingCtn;
+	static final String TAG = PackagesFragment.class.getSimpleName();
+
+	ListView		mListView;
+	PackageAdapter	mPackageAdapter;
+	LinearLayout	mWattingCtn;
+
+	final static int	STATE_GETDATA = 0;
+	final static int	STATE_FINISH = 1;
+	final static String	KEY_LIST = "key_list";
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,48 +49,58 @@ public class PackagesFragment extends Fragment {
 		mWattingCtn.setVisibility(View.VISIBLE);
 
 		mPackageAdapter = new PackageAdapter(getActivity());
-		new AppInfosTask().execute();
+
+		try {
+			TaskExecutor executor = new TaskExecutor();
+			executor.addStateNode(STATE_GETDATA, mGetAppInfosTask, false);
+			executor.addStateNode(STATE_FINISH, mAppInfosGetFinsih , true);
+			executor.addTransRule(STATE_GETDATA, 0, STATE_FINISH);
+			executor.execute(STATE_GETDATA, null, null);
+		} catch (Exception e) {
+			Log.e(TAG, "executor failed: " + e.getMessage());
+		}
 		return rootView;
 	}
 
-	private List<AppInfo> getAllInstalledAppInfo() {
-		if (null == getActivity()) {
-			return null;
-		}
+	ITask mAppInfosGetFinsih = new ITask() {
 
-		List<AppInfo> appInfoList = new ArrayList<AppInfo>();
-		PackageManager pm = getActivity().getPackageManager();
-		List<PackageInfo> pkgInfos = pm.getInstalledPackages(0);
-		for (PackageInfo info : pkgInfos) {
-			AppInfo appInfo = new AppInfo();
-			appInfo.strPkg = info.packageName;
-			appInfo.name = info.applicationInfo.loadLabel(pm).toString();
-			appInfo.icon = info.applicationInfo.loadIcon(pm);
-			appInfo.verCode = info.versionCode;
-			appInfoList.add(appInfo);
-		}
-		return appInfoList;
-	}
-
-	private class AppInfosTask extends AsyncTask<Void, Void, List<AppInfo>> {
-
-		@Override
-		protected List<AppInfo> doInBackground(Void... params) {
-			return getAllInstalledAppInfo();
-		}
-
-		@Override
-		protected void onPostExecute(List<AppInfo> appInfos) {
-			mPackageAdapter.setList(getAllInstalledAppInfo());
+			@Override
+			public int run(Map<String, Object> data) {
+			mPackageAdapter.setList((List<AppInfo>) data.get(KEY_LIST));
 			mListView.setAdapter(mPackageAdapter);
 			mListView.setVisibility(View.VISIBLE);
 			mWattingCtn.setVisibility(View.GONE);
+			return 0;
 		}
-	}
+	};
 
-	private static class PackageAdapter extends BaseAdapter {
-		private Context			mContext;
-		private List<AppInfo>	mAppInfoList;
+	ITask mGetAppInfosTask = new ITask() {
+
+		@Override
+		public int run(Map<String, Object> data) {
+			if (null == getActivity()) {
+				return 0;
+			}
+
+			List<AppInfo> appInfoList = new ArrayList<AppInfo>();
+			PackageManager pm = getActivity().getPackageManager();
+			List<PackageInfo> pkgInfos = pm.getInstalledPackages(0);
+			for (PackageInfo info : pkgInfos) {
+				AppInfo appInfo = new AppInfo();
+				appInfo.strPkg = info.packageName;
+				appInfo.name = info.applicationInfo.loadLabel(pm).toString();
+				appInfo.icon = info.applicationInfo.loadIcon(pm);
+				appInfo.verCode = info.versionCode;
+				appInfoList.add(appInfo);
+			}
+			data.put(KEY_LIST, appInfoList);
+			return 0;
+		}
+	};
+
+	static class PackageAdapter extends BaseAdapter {
+		Context			mContext;
+		List<AppInfo>	mAppInfoList;
 
 		public PackageAdapter(Context context) {
 			mContext = context;

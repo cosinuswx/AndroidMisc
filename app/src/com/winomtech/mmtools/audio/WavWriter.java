@@ -20,7 +20,7 @@ import java.nio.ByteOrder;
  * @since 2015-01-20
  */
 public class WavWriter {
-	private final static String TAG = WavWriter.class.getSimpleName();
+	final static String TAG = WavWriter.class.getSimpleName();
 
 	String mFilePath;
 	DataOutputStream mDataOutputStream;

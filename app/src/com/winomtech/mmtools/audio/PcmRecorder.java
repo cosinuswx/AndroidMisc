@@ -12,17 +12,17 @@ import com.winomtech.mmtools.utils.Log;
  * @since 2015-01-20
  */
 public class PcmRecorder {
-	private static final String TAG = PcmRecorder.class.getSimpleName();
+	static final String TAG = PcmRecorder.class.getSimpleName();
 
 	public static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
 	public static final int AUDIO_FORMAT_IN_BYTE = 2;
 
-	private WavWriter 	mWavWriter;
-	private AudioRecord	mAudioRecord;
-	private boolean		mStopFlag = false;
-	private int			mBufSize;
+	WavWriter 	mWavWriter;
+	AudioRecord	mAudioRecord;
+	boolean		mStopFlag = false;
+	int			mBufSize;
 
-	private RecordThread	mRecordThread;
+	RecordThread	mRecordThread;
 
 	public PcmRecorder(int sampleRate, int channelCnt, String filePath) {
 		int channelConfig = channelCnt == 1 ? AudioFormat.CHANNEL_CONFIGURATION_MONO : AudioFormat.CHANNEL_CONFIGURATION_STEREO;

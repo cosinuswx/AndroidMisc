@@ -45,6 +45,10 @@ public class PackagesFragment extends Fragment {
 	}
 
 	private List<AppInfo> getAllInstalledAppInfo() {
+		if (null == getActivity()) {
+			return null;
+		}
+
 		List<AppInfo> appInfoList = new ArrayList<AppInfo>();
 		PackageManager pm = getActivity().getPackageManager();
 		List<PackageInfo> pkgInfos = pm.getInstalledPackages(0);

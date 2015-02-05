@@ -5,17 +5,8 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<Button
-		android:id="@+id/btn_copy_traces"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:text="@string/str_copy_traces_to_sdcard" />
-
-	<Button
-		android:id="@+id/btn_app_list"
-		android:layout_below="@id/btn_copy_traces"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:text="@string/str_app_list" />
-
+	<ListView
+		android:id="@+id/lv_entry_list"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"/>
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.tencent.mmtools.app.ui;
+package com.winomtech.mmtools.app.ui;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.tencent.mmtools.app.R;
+import com.winomtech.mmtools.app.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.tencent.mmtools.app.ui;
+package com.winomtech.mmtools.app.ui;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tencent.mmtools.app.R;
+import com.winomtech.mmtools.app.R;
 
 public class CopyTracesFragment extends Fragment {
 	private TextView	mProgressText;

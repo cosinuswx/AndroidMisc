@@ -1,6 +1,6 @@
-package com.tencent.mmtools.app.ui;
+package com.winomtech.mmtools.app.ui;
 
-import com.tencent.mmtools.app.R;
+import com.winomtech.mmtools.app.R;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

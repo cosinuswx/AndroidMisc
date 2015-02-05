@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,13 +26,21 @@ import java.util.List;
  * @author kevinhuang 
  */
 public class PackagesFragment extends Fragment {
+	private ListView		mListView;
+	private PackageAdapter	mPackageAdapter;
+	private LinearLayout	mWattingCtn;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_packages, container, false);
-		ListView listView = (ListView) rootView.findViewById(R.id.lv_package_list);
-		PackageAdapter adapter = new PackageAdapter(getActivity());
-		adapter.setList(getAllInstalledAppInfo());
-		listView.setAdapter(adapter);
+		mListView = (ListView) rootView.findViewById(R.id.lv_package_list);
+		mListView.setVisibility(View.INVISIBLE);
+
+		mWattingCtn = (LinearLayout) rootView.findViewById(R.id.ll_please_waitting);
+		mWattingCtn.setVisibility(View.VISIBLE);
+
+		mPackageAdapter = new PackageAdapter(getActivity());
+		new AppInfosTask().execute();
 		return rootView;
 	}
 
@@ -47,6 +57,22 @@ public class PackagesFragment extends Fragment {
 			appInfoList.add(appInfo);
 		}
 		return appInfoList;
+	}
+
+	private class AppInfosTask extends AsyncTask<Void, Void, List<AppInfo>> {
+
+		@Override
+		protected List<AppInfo> doInBackground(Void... params) {
+			return getAllInstalledAppInfo();
+		}
+
+		@Override
+		protected void onPostExecute(List<AppInfo> appInfos) {
+			mPackageAdapter.setList(getAllInstalledAppInfo());
+			mListView.setAdapter(mPackageAdapter);
+			mListView.setVisibility(View.VISIBLE);
+			mWattingCtn.setVisibility(View.GONE);
+		}
 	}
 
 	private static class PackageAdapter extends BaseAdapter {

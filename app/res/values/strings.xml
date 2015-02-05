@@ -8,4 +8,5 @@
 	<string name="str_finish">处理完成！</string>
 	<string name="str_copy_traces_to_sdcard">复制traces.txt到sd卡</string>
 	<string name="str_app_list">APP列表</string>
+	<string name="str_please_waitting">正在处理中，请稍候&#8230;</string>
 </resources>

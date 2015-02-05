@@ -4,9 +4,27 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
+	<LinearLayout
+		android:id="@+id/ll_please_waitting"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_centerInParent="true">
+		<ProgressBar
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:indeterminate="true"/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:gravity="center_vertical"
+			android:text="@string/str_please_waitting"/>
+	</LinearLayout>
+
 	<ListView
 		android:id="@+id/lv_package_list"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"/>
+		android:layout_height="match_parent"
+		android:visibility="invisible"/>
 
 </RelativeLayout>

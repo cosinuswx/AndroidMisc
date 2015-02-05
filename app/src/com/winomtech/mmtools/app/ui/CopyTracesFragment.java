@@ -59,7 +59,7 @@ public class CopyTracesFragment extends Fragment {
 		@Override
 		public void run() {
 			String fromPath = "/data/anr";
-			String toPath = Environment.getExternalStorageDirectory() + "/traces/";
+			String toPath = Environment.getExternalStorageDirectory() + "/anr/";
 			File dir = new File(toPath);
 			if (false == dir.exists()) {
 				dir.mkdir();

@@ -37,7 +37,8 @@ public class LauncherFragment extends Fragment {
 		sEntryInfoList = new ArrayList<EntryInfo>();
 		sEntryInfoList.add(new EntryInfo(R.string.entry_copy_traces_to_sdcard, CopyTracesFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_app_list, PackagesFragment.class));
-		sEntryInfoList.add(new EntryInfo(R.string.entry_record_play, AudioFragment.class));
+		sEntryInfoList.add(new EntryInfo(R.string.entry_mediarecorder_audio, MediaRecorderAudioFragment.class));
+		sEntryInfoList.add(new EntryInfo(R.string.entry_record_play, AudioTrackRecordFragment.class));
 	}
 
 	@Override

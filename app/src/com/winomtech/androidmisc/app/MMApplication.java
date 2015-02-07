@@ -1,10 +1,10 @@
-package com.winomtech.mmtools.app;
+package com.winomtech.androidmisc.app;
 
 import android.app.Application;
 
-import com.winomtech.mmtools.utils.Constants;
-import com.winomtech.mmtools.utils.Log;
-import com.winomtech.mmtools.utils.MiscUtils;
+import com.winomtech.androidmisc.utils.Constants;
+import com.winomtech.androidmisc.utils.Log;
+import com.winomtech.androidmisc.utils.MiscUtils;
 
 /**
  * @author kevinhuang

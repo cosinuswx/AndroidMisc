@@ -1,6 +1,6 @@
-package com.winomtech.mmtools.ui;
+package com.winomtech.androidmisc.ui;
 
-import com.winomtech.mmtools.R;
+import com.winomtech.androidmisc.R;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

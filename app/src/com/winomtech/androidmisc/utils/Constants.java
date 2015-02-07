@@ -1,4 +1,4 @@
-package com.winomtech.mmtools.utils;
+package com.winomtech.androidmisc.utils;
 
 import android.os.Environment;
 

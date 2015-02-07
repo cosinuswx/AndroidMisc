@@ -1,8 +1,8 @@
-package com.winomtech.mmtools.asynccomponent;
+package com.winomtech.androidmisc.asynccomponent;
 
 import android.annotation.SuppressLint;
 
-import com.winomtech.mmtools.utils.Log;
+import com.winomtech.androidmisc.utils.Log;
 
 import java.util.HashMap;
 import java.util.Map;

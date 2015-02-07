@@ -1,11 +1,11 @@
-package com.winomtech.mmtools.audio;
+package com.winomtech.androidmisc.audio;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Process;
 
-import com.winomtech.mmtools.utils.Log;
+import com.winomtech.androidmisc.utils.Log;
 
 /**
  * @author kevinhuang

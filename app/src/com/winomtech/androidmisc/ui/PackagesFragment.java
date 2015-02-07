@@ -1,4 +1,4 @@
-package com.winomtech.mmtools.ui;
+package com.winomtech.androidmisc.ui;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -15,10 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.winomtech.mmtools.R;
-import com.winomtech.mmtools.asynccomponent.ITask;
-import com.winomtech.mmtools.asynccomponent.TaskExecutor;
-import com.winomtech.mmtools.utils.Log;
+import com.winomtech.androidmisc.R;
+import com.winomtech.androidmisc.asynccomponent.ITask;
+import com.winomtech.androidmisc.asynccomponent.TaskExecutor;
+import com.winomtech.androidmisc.utils.Log;
 
 import java.util.ArrayList;
 import java.util.List;

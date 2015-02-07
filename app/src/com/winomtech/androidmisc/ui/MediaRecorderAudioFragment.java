@@ -1,4 +1,4 @@
-package com.winomtech.mmtools.ui;
+package com.winomtech.androidmisc.ui;
 
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.winomtech.mmtools.R;
-import com.winomtech.mmtools.utils.Constants;
-import com.winomtech.mmtools.utils.SmTimer;
+import com.winomtech.androidmisc.R;
+import com.winomtech.androidmisc.utils.Constants;
+import com.winomtech.androidmisc.utils.SmTimer;
 
 import java.io.IOException;
 import java.util.Locale;

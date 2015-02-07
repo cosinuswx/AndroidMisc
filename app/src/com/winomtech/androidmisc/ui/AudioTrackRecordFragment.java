@@ -1,4 +1,4 @@
-package com.winomtech.mmtools.ui;
+package com.winomtech.androidmisc.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.winomtech.mmtools.R;
-import com.winomtech.mmtools.audio.PcmRecorder;
-import com.winomtech.mmtools.utils.Constants;
-import com.winomtech.mmtools.utils.SmTimer;
+import com.winomtech.androidmisc.R;
+import com.winomtech.androidmisc.audio.PcmRecorder;
+import com.winomtech.androidmisc.utils.Constants;
+import com.winomtech.androidmisc.utils.SmTimer;
 
 /**
  * @since 2015-02-05

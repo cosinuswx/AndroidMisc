@@ -1,6 +1,4 @@
-package com.winomtech.mmtools.asynccomponent;
-
-import android.os.Bundle;
+package com.winomtech.androidmisc.asynccomponent;
 
 import java.util.Map;
 

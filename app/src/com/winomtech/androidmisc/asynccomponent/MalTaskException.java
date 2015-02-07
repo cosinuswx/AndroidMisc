@@ -1,4 +1,4 @@
-package com.winomtech.mmtools.asynccomponent;
+package com.winomtech.androidmisc.asynccomponent;
 
 /**
  * @since 2015-02-06

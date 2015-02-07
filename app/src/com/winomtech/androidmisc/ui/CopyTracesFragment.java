@@ -1,4 +1,4 @@
-package com.winomtech.mmtools.ui;
+package com.winomtech.androidmisc.ui;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.winomtech.mmtools.R;
-import com.winomtech.mmtools.utils.MiscUtils;
+import com.winomtech.androidmisc.R;
+import com.winomtech.androidmisc.utils.MiscUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

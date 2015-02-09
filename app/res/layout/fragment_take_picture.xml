@@ -4,6 +4,12 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
+	<ImageView
+		android:id="@+id/iv_prview"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:visibility="gone"/>
+
 	<SurfaceView
 		android:id="@+id/sv_preview"
 		android:layout_width="match_parent"

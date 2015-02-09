@@ -39,6 +39,7 @@ public class LauncherFragment extends Fragment {
 		sEntryInfoList.add(new EntryInfo(R.string.entry_app_list, PackagesFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_mediarecorder_audio, MediaRecorderAudioFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_record_play, AudioTrackRecordFragment.class));
+		sEntryInfoList.add(new EntryInfo(R.string.entry_take_picture, TaskPictureFragment.class));
 	}
 
 	@Override

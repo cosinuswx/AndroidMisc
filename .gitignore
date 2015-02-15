@@ -31,3 +31,5 @@ proguard/
 
 # output
 out
+objs
+obj

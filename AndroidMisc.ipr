@@ -202,6 +202,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/appcompat/appcompat.iml" filepath="$PROJECT_DIR$/appcompat/appcompat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jni/jni.iml" filepath="$PROJECT_DIR$/jni/jni.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="Android API 21 Platform" project-jdk-type="Android SDK">

@@ -10,8 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.winomtech.androidmisc.R;
+import com.winomtech.androidmisc.sdk.utils.SmTimer;
 import com.winomtech.androidmisc.utils.Constants;
-import com.winomtech.androidmisc.utils.SmTimer;
 
 import java.io.IOException;
 import java.util.Locale;

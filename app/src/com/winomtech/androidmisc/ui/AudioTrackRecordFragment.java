@@ -10,8 +10,8 @@ import android.widget.ProgressBar;
 
 import com.winomtech.androidmisc.R;
 import com.winomtech.androidmisc.audio.PcmRecorder;
+import com.winomtech.androidmisc.sdk.utils.SmTimer;
 import com.winomtech.androidmisc.utils.Constants;
-import com.winomtech.androidmisc.utils.SmTimer;
 
 /**
  * @since 2015-02-05

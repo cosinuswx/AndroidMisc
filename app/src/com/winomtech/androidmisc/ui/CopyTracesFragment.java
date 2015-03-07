@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.winomtech.androidmisc.R;
-import com.winomtech.androidmisc.utils.MiscUtils;
+import com.winomtech.androidmisc.sdk.utils.MiscUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

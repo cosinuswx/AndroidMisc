@@ -14,8 +14,10 @@ import com.winomtech.androidmisc.jni.JniHook;
  * @since 2015-02-13
  * @author kevinhuang 
  * 测试jni hook
+ * KEVINTODO 未完待续
  */
 public class JniHookFragment extends Fragment {
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_jni_hook, container, false);

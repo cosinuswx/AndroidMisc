@@ -1,4 +1,4 @@
-package com.winomtech.androidmisc.utils;
+package com.winomtech.androidmisc.sdk.utils;
 
 
 import java.io.File;
@@ -21,41 +21,41 @@ public class Log {
 
 	private final static String[] lvlStr = {"V", "D", "I", "W", "E"};
 
-	synchronized public static void initImpl(String prefix) {
-		gLogImpl = new LogImpl(prefix);
+	synchronized public static void initImpl(String logDir, String prefix) {
+		gLogImpl = new LogImpl(logDir, prefix);
 	}
 
 	public static void v(String tag, String text) {
 		gLogImpl.logWriter(LEVEL_VERBOSE, tag, text);
-		if (Constants.LOG_TO_LOGCAT) {
+		if (SdkConstants.LOG_TO_LOGCAT) {
 			android.util.Log.v(tag, text);
 		}
 	}
 	
 	public static void d(String tag, String text) {
 		gLogImpl.logWriter(LEVEL_DEBUG, tag, text);
-		if (Constants.LOG_TO_LOGCAT) {
+		if (SdkConstants.LOG_TO_LOGCAT) {
 			android.util.Log.d(tag, text);
 		}
 	}
 	
 	public static void i(String tag, String text) {
 		gLogImpl.logWriter(LEVEL_INFO, tag, text);
-		if (Constants.LOG_TO_LOGCAT) {
+		if (SdkConstants.LOG_TO_LOGCAT) {
 			android.util.Log.i(tag, text);
 		}
 	}
 	
 	public static void w(String tag, String text) {
 		gLogImpl.logWriter(LEVEL_WARNING, tag, text);
-		if (Constants.LOG_TO_LOGCAT) {
+		if (SdkConstants.LOG_TO_LOGCAT) {
 			android.util.Log.w(tag, text);
 		}
 	}
 	
 	public static void e(String tag, String text) {
 		gLogImpl.logWriter(LEVEL_ERROR, tag, text);
-		if (Constants.LOG_TO_LOGCAT) {
+		if (SdkConstants.LOG_TO_LOGCAT) {
 			android.util.Log.e(tag, text);
 		}
 	}
@@ -84,14 +84,14 @@ public class Log {
 		private PrintStream mPrintStream;
 		private SimpleDateFormat mSimpleDataFormat;
 
-		public LogImpl(String perfix) {
+		public LogImpl(String logDir, String perfix) {
 			Calendar calendar = Calendar.getInstance();
 			mSimpleDataFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ", Locale.US); 
-			if (!(new File(Constants.LOG_SAVE_PATH).mkdirs())) {
+			if (!(new File(logDir).mkdirs())) {
 				return;
 			}
 
-			String path = String.format(Locale.US, "%s/%s_%04d%02d%02d.log", Constants.LOG_SAVE_PATH, perfix,
+			String path = String.format(Locale.US, "%s/%s_%04d%02d%02d.log", logDir, perfix,
 					calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
 			try {
 				mPrintStream = new PrintStream(new FileOutputStream(new File(path), true));

@@ -1,4 +1,4 @@
-package com.winomtech.androidmisc.utils;
+package com.winomtech.androidmisc.sdk.utils;
 
 import android.os.Handler;
 import android.os.Message;

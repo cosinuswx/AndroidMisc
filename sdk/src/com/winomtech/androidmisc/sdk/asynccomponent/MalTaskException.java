@@ -1,4 +1,4 @@
-package com.winomtech.androidmisc.asynccomponent;
+package com.winomtech.androidmisc.sdk.asynccomponent;
 
 /**
  * @since 2015-02-06

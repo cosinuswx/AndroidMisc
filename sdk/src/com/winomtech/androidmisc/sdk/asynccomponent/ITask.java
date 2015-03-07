@@ -1,4 +1,4 @@
-package com.winomtech.androidmisc.asynccomponent;
+package com.winomtech.androidmisc.sdk.asynccomponent;
 
 import java.util.Map;
 

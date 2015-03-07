@@ -1,4 +1,4 @@
-package com.winomtech.androidmisc.utils;
+package com.winomtech.androidmisc.sdk.utils;
 
 /**
  * @since 2015-02-07

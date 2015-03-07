@@ -1,8 +1,8 @@
-package com.winomtech.androidmisc.asynccomponent;
+package com.winomtech.androidmisc.sdk.asynccomponent;
 
 import android.annotation.SuppressLint;
 
-import com.winomtech.androidmisc.utils.Log;
+import com.winomtech.androidmisc.sdk.utils.Log;
 
 import java.util.HashMap;
 import java.util.Map;

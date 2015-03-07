@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.winomtech.androidmisc.R;
-import com.winomtech.androidmisc.utils.Log;
+import com.winomtech.androidmisc.sdk.utils.Log;
 
 import java.io.IOException;
 import java.util.List;

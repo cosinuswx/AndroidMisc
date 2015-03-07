@@ -1,4 +1,4 @@
-package com.winomtech.androidmisc.jni;
+package com.winomtech.androidmisc.plugin.jni;
 
 /**
  * @since 2015-02-13

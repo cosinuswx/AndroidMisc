@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.winomtech.androidmisc.R;
-import com.winomtech.androidmisc.jni.JniHook;
 
 /**
  * @since 2015-02-13
@@ -29,7 +28,7 @@ public class JniHookFragment extends Fragment {
 	View.OnClickListener mStartTest = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			JniHook.nativeStart();
+//			JniHook.nativeStart();
 		}
 	};
 }

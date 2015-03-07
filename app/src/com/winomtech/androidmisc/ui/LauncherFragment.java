@@ -1,7 +1,5 @@
 package com.winomtech.androidmisc.ui;
 
-import com.winomtech.androidmisc.R;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.winomtech.androidmisc.R;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;

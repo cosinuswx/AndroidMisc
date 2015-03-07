@@ -17,5 +17,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="appcompat" />
     <orderEntry type="module" module-name="sdk" />
+    <orderEntry type="module" module-name="jni" />
   </component>
 </module>

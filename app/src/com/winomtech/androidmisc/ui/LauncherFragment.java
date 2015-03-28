@@ -42,6 +42,7 @@ public class LauncherFragment extends Fragment {
 		sEntryInfoList.add(new EntryInfo(R.string.entry_take_picture, TaskPictureFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_system_info, SystemInfoFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_test_jni_hook, JniHookFragment.class));
+		sEntryInfoList.add(new EntryInfo(R.string.entry_pick_time, PickTimeFragment.class));
 	}
 
 	@Override

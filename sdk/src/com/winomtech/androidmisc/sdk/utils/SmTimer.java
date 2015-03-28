@@ -4,11 +4,10 @@ import android.os.Handler;
 import android.os.Message;
 
 public class SmTimer extends Handler {
-
 	private int		mInterval;
 	private boolean	mLoop = false;
 
-	private SmTimerCallback		mCallback;
+	private SmTimerCallback mCallback;
 
 	public interface SmTimerCallback {
 		public void		onTimeout();
@@ -25,7 +24,6 @@ public class SmTimer extends Handler {
 		}
 
 		if (mLoop) {
-			stopTimer();
 			sendEmptyMessageDelayed(0, mInterval);
 		}
 	}
@@ -42,5 +40,6 @@ public class SmTimer extends Handler {
 		while (hasMessages(0)) {
 			removeMessages(0);
 		}
+		mLoop = false;
 	}
 }

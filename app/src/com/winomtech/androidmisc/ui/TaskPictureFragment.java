@@ -161,7 +161,7 @@ public class TaskPictureFragment extends Fragment implements SurfaceHolder.Callb
 		for (int i = 0; i < cameraCnt; ++i) {
 			Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
 			Camera.getCameraInfo(i, cameraInfo);
-			if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+			if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
 				cameraId = i;
 				break;
 			}
@@ -173,6 +173,7 @@ public class TaskPictureFragment extends Fragment implements SurfaceHolder.Callb
 		List<Size> lstPreview = camera.getParameters().getSupportedPreviewSizes();
 		Size maxSize = camera.new Size(1, 1);
 		for (Camera.Size size : lstPreview) {
+			Log.d(TAG, "width: %d, height: %d", size.width, size.height);
 			if (maxSize.width * maxSize.height < size.width * size.height) {
 				maxSize.width = size.width;
 				maxSize.height = size.height;

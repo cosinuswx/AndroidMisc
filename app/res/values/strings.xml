@@ -5,7 +5,7 @@
 	<string name="entry_copy_traces_to_sdcard">复制traces.txt到sd卡</string>
 	<string name="entry_app_list">APP列表</string>
 	<string name="entry_mediarecorder_audio">MediaRecorder录音</string>
-	<string name="entry_record_play">AudioTrack录音</string>
+	<string name="entry_record_play">AudioRecord录音</string>
 	<string name="entry_take_picture">Preview拍照</string>
 	<string name="entry_system_info">系统信息</string>
 	<string name="entry_test_jni_hook">测试jni hook</string>

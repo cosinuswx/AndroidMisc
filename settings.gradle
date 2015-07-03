@@ -1,0 +1,4 @@
+include ":app"
+include ":sdk"
+include ":appcompat"
+//include ":jni"

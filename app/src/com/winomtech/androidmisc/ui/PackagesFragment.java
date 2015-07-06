@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +21,7 @@ import com.winomtech.androidmisc.R;
 import com.winomtech.androidmisc.sdk.asynccomponent.ITask;
 import com.winomtech.androidmisc.sdk.asynccomponent.TaskExecutor;
 import com.winomtech.androidmisc.sdk.utils.Log;
+import com.winomtech.androidmisc.sdk.utils.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,7 @@ public class PackagesFragment extends Fragment {
 		mWattingCtn.setVisibility(View.VISIBLE);
 
 		mPackageAdapter = new PackageAdapter(getActivity());
+		mListView.setOnItemClickListener(mPackageAdapter);
 
 		try {
 			TaskExecutor executor = new TaskExecutor();
@@ -98,7 +102,7 @@ public class PackagesFragment extends Fragment {
 		}
 	};
 
-	static class PackageAdapter extends BaseAdapter {
+	static class PackageAdapter extends BaseAdapter implements AdapterView.OnItemClickListener {
 		Context			mContext;
 		List<AppInfo>	mAppInfoList;
 
@@ -129,16 +133,37 @@ public class PackagesFragment extends Fragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			AppInfo appInfo = mAppInfoList.get(position);
+			ViewHolder holder;
 			if (null == convertView) {
 				convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_package_item, parent, false);
+				holder = new ViewHolder();
+				holder.ivIcon = (ImageView) convertView.findViewById(R.id.iv_app_icon);
+				holder.tvName = (TextView) convertView.findViewById(R.id.tv_app_name);
+				holder.tvPkgStr = (TextView) convertView.findViewById(R.id.tv_app_package);
+				convertView.setTag(holder);
+			} else {
+				holder = (ViewHolder) convertView.getTag();
 			}
-			ImageView ivIcon = (ImageView) convertView.findViewById(R.id.iv_app_icon);
-			ivIcon.setImageDrawable(appInfo.icon);
-			TextView tvName = (TextView) convertView.findViewById(R.id.tv_app_name);
-			tvName.setText(appInfo.name);
-			TextView tvPkgStr = (TextView) convertView.findViewById(R.id.tv_app_package);
-			tvPkgStr.setText(appInfo.strPkg + " : "  + appInfo.verCode);
+
+			holder.ivIcon.setImageDrawable(appInfo.icon);
+			holder.tvName.setText(appInfo.name);
+			holder.tvPkgStr.setText(appInfo.strPkg + " : "  + appInfo.verCode);
 			return convertView;
+		}
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			ViewHolder holder = (ViewHolder) view.getTag();
+			TranslateAnimation animation = new TranslateAnimation(0, 0, 0, -20);
+			animation.setDuration(500);
+			animation.setFillAfter(true);
+			holder.tvName.startAnimation(animation);
+		}
+
+		static class ViewHolder {
+			public ImageView ivIcon;
+			public TextView tvName;
+			public TextView tvPkgStr;
 		}
 	}
 

@@ -28,7 +28,7 @@ public class JniHookFragment extends Fragment {
 	View.OnClickListener mStartTest = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-//			JniHook.nativeStart();
+//			Log.d("test", "" + JniHook.nativeStart());
 		}
 	};
 }

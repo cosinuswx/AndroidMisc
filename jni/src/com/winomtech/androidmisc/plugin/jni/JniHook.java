@@ -5,5 +5,6 @@ package com.winomtech.androidmisc.plugin.jni;
  * @author kevinhuang 
  */
 public class JniHook {
-	public static native void nativeStart();
+	public static native int nativeStart();
+	public static native void nativeXXTea(byte[] data, byte[] key, int isDecode);
 }

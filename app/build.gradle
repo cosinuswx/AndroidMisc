@@ -1,33 +1,52 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.model.application'
 
-android {
-	compileSdkVersion 22
-	buildToolsVersion "22.0.1"
+model {
+	android {
+		compileSdkVersion = 22
+		buildToolsVersion = "22.0.1"
 
-	defaultConfig {
-		applicationId "com.winomtech.androidmisc"
-		minSdkVersion 15
-		targetSdkVersion 22
-		versionCode 1
-		versionName "1.0"
-	}
-
-	sourceSets {
-		main {
-			manifest.srcFile 'AndroidManifest.xml'
-			java.srcDirs = ['src']
-			resources.srcDirs = ['src']
-			aidl.srcDirs = ['src']
-			renderscript.srcDirs = ['src']
-			res.srcDirs = ['res']
-			assets.srcDirs = ['assets']
+		defaultConfig.with {
+			applicationId = "com.winomtech.androidmisc"
+			minSdkVersion.apiLevel = 15
+			targetSdkVersion.apiLevel = 22
 		}
 	}
 
-	buildTypes {
+	android.buildTypes {
 		release {
-			minifyEnabled false
-			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+			isMinifyEnabled = false
+			proguardFiles += file('proguard-rules.pro')
+		}
+	}
+
+	android.sources {
+		main {
+			manifest {
+				source {
+					srcDir '.'
+					include 'AndroidManifest.xml'
+				}
+			}
+			java {
+				source {
+					srcDir 'src'
+				}
+			}
+			resources {
+				source {
+					srcDir 'res'
+				}
+			}
+			assets {
+				source {
+					srcDir 'assets'
+				}
+			}
+			res {
+				source {
+					srcDir 'res'
+				}
+			}
 		}
 	}
 }

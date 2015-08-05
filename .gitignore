@@ -28,6 +28,7 @@ proguard/
 # android studio
 .idea
 *.iws
+**/*.iml
 
 # output
 out

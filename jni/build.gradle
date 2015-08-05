@@ -1,41 +1,67 @@
-buildscript {
-	repositories {
-		mavenCentral()
+apply plugin: 'com.android.model.library'
+
+model {
+	android {
+		compileSdkVersion = 22
+		buildToolsVersion = "22.0.1"
 	}
 
-	dependencies {
-		classpath 'com.android.tools.build:gradle:1.2.3'
-	}
-}
-
-apply plugin: 'com.android.library'
-
-android {
-	compileSdkVersion 21
-	buildToolsVersion "21.1.2"
-	sourceSets {
+	android.sources {
 		main {
-			manifest.srcFile 'AndroidManifest.xml'
-			java.srcDirs = ['src']
-			resources.srcDirs = ['src']
-			aidl.srcDirs = ['src']
-			renderscript.srcDirs = ['src']
-			res.srcDirs = ['res']
-			assets.srcDirs = ['assets']
-			jni.srcDirs = ['jni']
+			manifest {
+				source {
+					srcDir '.'
+					include 'AndroidManifest.xml'
+				}
+			}
+			java {
+				source {
+					srcDir 'src'
+				}
+			}
+			jni {
+				source {
+					srcDir 'jni'
+				}
+			}
+			res {
+				source {
+					srcDir 'res'
+				}
+			}
 		}
 	}
-	
-	defaultConfig {
-		ndk {
-			moduleName 'andoridmisc'
-			ldLibs 'log'
-		}
-	}
-}
 
-repositories {
-	mavenCentral()
+	android.productFlavors {
+		// build one including all cpu architectures
+		create("all")
+	}
+
+	android.buildTypes {
+		release {
+			isMinifyEnabled = false
+			proguardFiles += file('proguard-rules.txt')
+		}
+		debug {
+			isMinifyEnabled = false
+			isJniDebuggable = true
+			isDebuggable = true
+		}
+	}
+
+	android.ndk {
+		moduleName = 'andoridmisc'
+		// toolchain = "clang"
+		// toolchainVersion = "3.5"
+		// Note that CFlags has a capital C, which is inconsistent with
+		// the naming convention of other properties.  This is a
+		// technical limitation that will be resolved
+		// CFlags += "-DCUSTOM_DEFINE"
+		// cppFlags += "-DCUSTOM_DEFINE"
+		// ldFlags += "-L/custom/lib/path"
+		ldLibs += 'log'
+		// stl = "stlport_static"
+	}
 }
 
 dependencies {

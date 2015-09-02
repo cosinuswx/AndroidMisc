@@ -1,30 +1,21 @@
-apply plugin: 'com.android.model.library'
+apply plugin: 'com.android.library'
 
-model {
-	android {
-		compileSdkVersion = 22
-		buildToolsVersion = "22.0.1"
-	}
-
-	android.sources {
+android {
+	compileSdkVersion 21
+	buildToolsVersion "21.1.2"
+	sourceSets {
 		main {
-			manifest {
-				source {
-					srcDir '.'
-					include 'AndroidManifest.xml'
-				}
-			}
-			java {
-				source {
-					srcDir 'src'
-				}
-			}
-			res {
-				source {
-					srcDir 'res'
-				}
-			}
+			manifest.srcFile 'AndroidManifest.xml'
+			java.srcDirs = ['src']
+			resources.srcDirs = ['src']
+			aidl.srcDirs = ['src']
+			renderscript.srcDirs = ['src']
+			res.srcDirs = ['res']
+			assets.srcDirs = ['assets']
 		}
 	}
 }
 
+repositories {
+	mavenCentral()
+}

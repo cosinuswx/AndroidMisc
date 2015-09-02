@@ -102,14 +102,14 @@ void dumpHex(jbyte* data, int len) {
     free(temp);
 }
 
-JNIEXPORT jint JNICALL Java_com_winomtech_androidmisc_plugin_jni_JniHook_nativeStart(JNIEnv* env,
+JNIEXPORT jint JNICALL Java_com_winomtech_androidmisc_plugin_jni_JniEntry_nativeStart(JNIEnv* env,
                                                                                      jclass __unused class)
 {
     uint32_t a = 123;
     return a + java_test(40);
 }
 
-JNIEXPORT void JNICALL Java_com_winomtech_androidmisc_plugin_jni_JniHook_nativeXXTea(JNIEnv *env,
+JNIEXPORT void JNICALL Java_com_winomtech_androidmisc_plugin_jni_JniEntry_nativeXXTea(JNIEnv *env,
                                                                                      jclass __unused class,
                                                                                      jbyteArray data, 
                                                                                      jbyteArray key,

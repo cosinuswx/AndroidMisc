@@ -10,6 +10,7 @@
 	<string name="entry_system_info">系统信息</string>
 	<string name="entry_test_jni_hook">测试jni hook</string>
 	<string name="entry_pick_time">选择时间</string>
+	<string name="entry_xxtea">XXTea算法测试</string>
 
 	<string name="str_please_waitting">正在处理中，请稍候&#8230;</string>
 	<string name="str_progressing" formatted="false">正在处理中，第%d个（共%d个）</string>

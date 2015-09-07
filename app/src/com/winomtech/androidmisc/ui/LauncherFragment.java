@@ -44,6 +44,7 @@ public class LauncherFragment extends Fragment {
 		sEntryInfoList.add(new EntryInfo(R.string.entry_test_jni_hook, JniHookFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_pick_time, PickTimeFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_xxtea, XXTeaFragment.class));
+		sEntryInfoList.add(new EntryInfo(R.string.entry_svg_drawable, SVGDrawableFragment.class));
 	}
 
 	@Override

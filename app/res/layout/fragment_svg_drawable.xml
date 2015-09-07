@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<ImageView
+		android:id="@+id/iv_pic_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#17000000"
+		android:layerType="software"
+		android:scaleType="fitXY"
+		android:layout_centerInParent="true"/>
+
+	<SeekBar
+		android:id="@+id/pb_scale_value"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"/>
+	
+</RelativeLayout>

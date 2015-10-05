@@ -45,6 +45,7 @@ public class LauncherFragment extends Fragment {
 		sEntryInfoList.add(new EntryInfo(R.string.entry_pick_time, PickTimeFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_xxtea, XXTeaFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_svg_drawable, SVGDrawableFragment.class));
+		sEntryInfoList.add(new EntryInfo(R.string.entry_render_script_exp, RenderScriptFragment.class));
 	}
 
 	@Override

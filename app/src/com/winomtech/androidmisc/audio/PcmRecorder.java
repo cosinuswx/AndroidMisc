@@ -38,7 +38,6 @@ public class PcmRecorder {
 		Log.d(TAG, "startRecord");
 		mRecordThread = new RecordThread();
 		mRecordThread.start();
-		
 	}
 
 	public void stopRecord() {

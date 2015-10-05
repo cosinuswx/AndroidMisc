@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.winomtech.androidmisc.R;
+import com.winomtech.androidmisc.rs.ScriptC_Gray;
 import com.winomtech.androidmisc.sdk.utils.Log;
 
 import java.nio.ByteBuffer;
@@ -30,11 +32,11 @@ public class RenderScriptFragment extends Fragment {
 	Bitmap mInBitmap;
 	Bitmap mOutBitmap;
 
-	ByteBuffer mInBuffer;
-	ByteBuffer mOutBuffer;
+	Allocation mAllocationIn;
+	Allocation mAllocationOut;
 
 	RenderScript mRenderScript;
-	GrayInteract mGrayInteract;
+	ScriptC_Gray mGrayScript;
 
 	@Nullable
 	@Override
@@ -47,24 +49,20 @@ public class RenderScriptFragment extends Fragment {
 		mOutBitmap = Bitmap.createBitmap(mInBitmap.getWidth(), mInBitmap.getHeight(), Bitmap.Config.ARGB_8888);
 		mPosition = mInBitmap.getWidth();
 
-		mInBuffer = ByteBuffer.allocate(mInBitmap.getWidth() * mInBitmap.getHeight() * 4);
-		mOutBuffer = ByteBuffer.allocate(mInBitmap.getWidth() * mInBitmap.getHeight() * 4);
-		mInBitmap.copyPixelsToBuffer(mInBuffer);
-
 		mRenderScript = RenderScript.create(getActivity());
-		mGrayInteract = new GrayInteract(mRenderScript);
-		mGrayInteract.reset(mInBitmap.getWidth(), mInBitmap.getHeight());
+		mGrayScript = new ScriptC_Gray(mRenderScript);
+		mGrayScript.invoke_setSize(mInBitmap.getWidth(), mInBitmap.getHeight());
+
+		mAllocationIn = Allocation.createFromBitmap(mRenderScript, mInBitmap);
+		mAllocationOut = Allocation.createFromBitmap(mRenderScript, mOutBitmap);
 
 		refreshBitmap();
 		return mRootView;
 	}
 
 	void refreshBitmap() {
-		mInBuffer.position(0);
-		mGrayInteract.execute(mInBuffer.array(), mOutBuffer.array());
-		mOutBuffer.position(0);
-		mOutBitmap.copyPixelsFromBuffer(mOutBuffer);
-
+		mGrayScript.forEach_root(mAllocationIn, mAllocationOut);
+		mAllocationOut.copyTo(mOutBitmap);
 		mImageView.setImageBitmap(mOutBitmap);
 	}
 
@@ -80,7 +78,7 @@ public class RenderScriptFragment extends Fragment {
 
 				case MotionEvent.ACTION_MOVE:
 					int pos = (int) (mPosition + (event.getRawX() - mDownPos));
-					mGrayInteract.setPos(pos);
+					mGrayScript.invoke_setPos(pos);
 					refreshBitmap();
 					return true;
 

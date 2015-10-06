@@ -51,7 +51,6 @@ public class RenderScriptFragment extends Fragment {
 
 		mRenderScript = RenderScript.create(getActivity());
 		mGrayScript = new ScriptC_Gray(mRenderScript);
-		mGrayScript.invoke_setSize(mInBitmap.getWidth(), mInBitmap.getHeight());
 
 		mAllocationIn = Allocation.createFromBitmap(mRenderScript, mInBitmap);
 		mAllocationOut = Allocation.createFromBitmap(mRenderScript, mOutBitmap);
@@ -78,7 +77,7 @@ public class RenderScriptFragment extends Fragment {
 
 				case MotionEvent.ACTION_MOVE:
 					int pos = (int) (mPosition + (event.getRawX() - mDownPos));
-					mGrayScript.invoke_setPos(pos);
+					mGrayScript.set_gPos(pos);
 					refreshBitmap();
 					return true;
 

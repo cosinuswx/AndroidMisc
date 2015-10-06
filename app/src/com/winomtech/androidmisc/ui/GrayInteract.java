@@ -30,7 +30,7 @@ public class GrayInteract {
 
 		mHeight = height;
 		mWidth = width;
-		mGrayScript.invoke_setSize(width, height);
+//		mGrayScript.invoke_setSize(width, height);
 
 		Type.Builder tb = new Type.Builder(mRS, Element.RGBA_8888(mRS));
 		tb.setX(mWidth);
@@ -45,7 +45,7 @@ public class GrayInteract {
 	}
 
 	public void setPos(int pos) {
-		mGrayScript.invoke_setPos(pos);
+//		mGrayScript.invoke_setPos(pos);
 	}
 
 	public int getWidth() {

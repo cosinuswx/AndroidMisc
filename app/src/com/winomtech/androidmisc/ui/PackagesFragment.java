@@ -21,6 +21,7 @@ import com.winomtech.androidmisc.R;
 import com.winomtech.androidmisc.sdk.asynccomponent.ITask;
 import com.winomtech.androidmisc.sdk.asynccomponent.TaskExecutor;
 import com.winomtech.androidmisc.sdk.utils.Log;
+import com.winomtech.androidmisc.view.TouchToShowLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +31,15 @@ import java.util.Map;
  * @since 2015-02-04
  * @author kevinhuang 
  */
-public class PackagesFragment extends Fragment {
+public class PackagesFragment extends Fragment implements
+		TouchToShowLayout.ITouchListener,
+		TouchToShowLayout.IItemInfoProvider {
 	static final String TAG = PackagesFragment.class.getSimpleName();
 
 	ListView		mListView;
 	PackageAdapter	mPackageAdapter;
 	LinearLayout	mWattingCtn;
+	ImageView		mIvCover;
 
 	final static int	STATE_GETDATA = 0;
 	final static int	STATE_FINISH = 1;
@@ -43,7 +47,8 @@ public class PackagesFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_packages, container, false);
+		TouchToShowLayout rootView = (TouchToShowLayout) inflater.inflate(R.layout.fragment_packages, container, false);
+		mIvCover = (ImageView) rootView.findViewById(R.id.iv_cover_image);
 		mListView = (ListView) rootView.findViewById(R.id.lv_package_list);
 		mListView.setVisibility(View.INVISIBLE);
 
@@ -52,6 +57,9 @@ public class PackagesFragment extends Fragment {
 
 		mPackageAdapter = new PackageAdapter(getActivity());
 		mListView.setOnItemClickListener(mPackageAdapter);
+
+		rootView.setTouchListener(this);
+		rootView.setItemInfoProvider(this);
 
 		try {
 			TaskExecutor executor = new TaskExecutor();
@@ -100,6 +108,48 @@ public class PackagesFragment extends Fragment {
 			return 0;
 		}
 	};
+
+	@Override
+	public boolean onLongTouch(int pos) {
+		int offset = pos - mListView.getFirstVisiblePosition();
+		View v = mListView.getChildAt(offset);
+		PackageAdapter.ViewHolder holder = (PackageAdapter.ViewHolder) v.getTag();
+		if (holder.tvName.getText().toString().startsWith("com.")) {
+			mIvCover.setVisibility(View.VISIBLE);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public void onTouchEnd() {
+		mIvCover.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void onClkWhenLongTouch() {
+		
+	}
+
+	@Override
+	public int getItemOfPoint(float x, float y) {
+		int pos = -1;
+		int start = mListView.getFirstVisiblePosition();
+		int end = mListView.getLastVisiblePosition();
+		int count = end - start;
+		for (int i = 0; i <= count; ++i) {
+			Log.i("test", "pos: " + i);
+			View v = mListView.getChildAt(i);
+			if (y <= v.getBottom()) {
+				pos = i;
+				PackageAdapter.ViewHolder holder = (PackageAdapter.ViewHolder) v.getTag();
+				Log.d("test", "on name: " + holder.tvName.getText());
+				break;
+			}
+		}
+		return start + pos;
+	}
 
 	static class PackageAdapter extends BaseAdapter implements AdapterView.OnItemClickListener {
 		Context			mContext;

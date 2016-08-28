@@ -1,31 +1,43 @@
-apply plugin: 'com.android.model.application'
+apply plugin: 'com.android.application'
 
-model {
-    android {
-        compileSdkVersion = 23
-        buildToolsVersion = "23.0.1"
+android {
+	compileSdkVersion 23
+	buildToolsVersion "23.0.1"
 
-        defaultConfig.with {
-            applicationId = "com.winomtech.androidmisc"
-            minSdkVersion.apiLevel = 15
-            targetSdkVersion.apiLevel = 22
-            versionCode = 1
-            versionName = "1.0"
+	defaultConfig {
+		applicationId "com.winomtech.androidmisc"
+		minSdkVersion 15
+		targetSdkVersion 23
+		versionCode 1
+		versionName "1.0"
 
-            renderscriptTargetApi = 18
-            renderscriptSupportModeEnabled = true
-        }
-    }
+		renderscriptTargetApi 18
+		renderscriptSupportModeEnabled true
+	}
 
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles.add(file('proguard-rules.pro'))
-        }
-    }
+	sourceSets {
+		main {
+			manifest.srcFile 'AndroidManifest.xml'
+			java.srcDirs = ['src']
+			resources.srcDirs = ['src']
+			aidl.srcDirs = ['src']
+			renderscript.srcDirs = ['rs']
+			res.srcDirs = ['res']
+			assets.srcDirs = ['assets']
+		}
+	}
+
+	buildTypes {
+		release {
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+		}
+	}
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.0.1'
+	compile fileTree(dir: 'libs', include: ['*.jar'])
+	compile project(':sdk')
+	compile project(':jni')
+	compile 'com.android.support:appcompat-v7:23.0.1'
 }

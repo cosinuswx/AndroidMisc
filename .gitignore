@@ -34,3 +34,6 @@ proguard/
 out
 objs
 obj
+
+# release-tools
+**/release-tools

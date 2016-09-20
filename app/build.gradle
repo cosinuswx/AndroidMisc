@@ -35,6 +35,10 @@ android {
 	}
 }
 
+if (file(getRootDir().getPath() + "/release-tools/cert.gradle").exists()) {
+    apply from: '../release-tools/cert.gradle'
+}
+
 dependencies {
 	compile fileTree(dir: 'libs', include: ['*.jar'])
 	compile project(':sdk')

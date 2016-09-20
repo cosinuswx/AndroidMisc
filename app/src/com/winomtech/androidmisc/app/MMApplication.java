@@ -2,10 +2,12 @@ package com.winomtech.androidmisc.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.nfc.Tag;
 
 import com.winomtech.androidmisc.plugin.PluginManager;
 import com.winomtech.androidmisc.sdk.utils.Log;
 import com.winomtech.androidmisc.sdk.utils.MiscUtils;
+import com.winomtech.androidmisc.utils.BuildInfo;
 import com.winomtech.androidmisc.utils.Constants;
 
 /**
@@ -13,7 +15,8 @@ import com.winomtech.androidmisc.utils.Constants;
  * @since 2015-01-20
  */
 public class MMApplication extends Application {
-	final static String		sourcePkgName = "com.winomtech.androidmisc";
+    final static String TAG = "MMApplication";
+	final static String	sourcePkgName = "com.winomtech.androidmisc";
 
 	static Context		sContext;
 
@@ -24,6 +27,8 @@ public class MMApplication extends Application {
 		Log.initImpl(Constants.LOG_SAVE_PATH, "MM");
 		registerPlugin();
 		MiscUtils.mkdirs(Constants.SDCARD_PATH);
+
+        Log.i(TAG, BuildInfo.info());
 	}
 	
 	void registerPlugin() {

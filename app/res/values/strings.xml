@@ -8,9 +8,7 @@
 	<string name="entry_record_play">AudioRecord录音</string>
 	<string name="entry_take_picture">Preview拍照</string>
 	<string name="entry_system_info">系统信息</string>
-	<string name="entry_test_jni_hook">测试jni hook</string>
 	<string name="entry_pick_time">选择时间</string>
-	<string name="entry_xxtea">XXTea算法测试</string>
 	<string name="entry_svg_drawable">SVG图像测试</string>
 	<string name="entry_render_script_exp">RS测试</string>
 

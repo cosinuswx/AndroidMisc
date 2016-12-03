@@ -5,6 +5,5 @@ package com.winomtech.androidmisc.plugin.jni;
  * @author kevinhuang 
  */
 public class JniEntry {
-	public static native int nativeStart();
-	public static native void nativeXXTea(byte[] data, byte[] key, int isDecode);
+	public static native void XXTea(byte[] data, byte[] key, int isDecode);
 }

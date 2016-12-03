@@ -1,38 +1,38 @@
 apply plugin: 'com.android.application'
 
 android {
-	compileSdkVersion 23
-	buildToolsVersion "23.0.1"
+    compileSdkVersion 23
+    buildToolsVersion '24.0.2'
 
-	defaultConfig {
-		applicationId "com.winomtech.androidmisc"
-		minSdkVersion 15
-		targetSdkVersion 23
-		versionCode 1
-		versionName "1.0"
+    defaultConfig {
+        applicationId "com.winomtech.androidmisc"
+        minSdkVersion 15
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
 
-		renderscriptTargetApi 18
-		renderscriptSupportModeEnabled true
-	}
+        renderscriptTargetApi 18
+        renderscriptSupportModeEnabled true
+    }
 
-	sourceSets {
-		main {
-			manifest.srcFile 'AndroidManifest.xml'
-			java.srcDirs = ['src']
-			resources.srcDirs = ['src']
-			aidl.srcDirs = ['src']
-			renderscript.srcDirs = ['rs']
-			res.srcDirs = ['res']
-			assets.srcDirs = ['assets']
-		}
-	}
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['rs']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+    }
 
-	buildTypes {
-		release {
-			minifyEnabled false
-			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-		}
-	}
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 }
 
 if (file(getRootDir().getPath() + "/release-tools/cert.gradle").exists()) {
@@ -40,68 +40,8 @@ if (file(getRootDir().getPath() + "/release-tools/cert.gradle").exists()) {
 }
 
 dependencies {
-	compile fileTree(dir: 'libs', include: ['*.jar'])
-	compile project(':sdk')
-	compile project(':jni')
-	compile 'com.android.support:appcompat-v7:23.0.1'
-}
-
-
-ext {
-    isDebug = false
-}
-
-task gitversion() {
-    ext.revision = 'git rev-list --count HEAD'.execute().text.trim()
-    ext.branch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
-
-    TimeZone.setDefault(TimeZone.getTimeZone('GMT+08'))
-    def now = new Date()
-    ext.time = now.format("yyyy/MM/dd HH:mm:ss.SSS")
-}
-
-task genbuildinfo(type: Copy, dependsOn: gitversion) {
-    from '../release-tools/BuildInfo.java'
-    into '../app/src/com/winomtech/androidmisc/utils'
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    def alreadyOutputMessage = false
-
-    // Use some of the filters provided by Ant
-    filter { String line ->
-        if (!alreadyOutputMessage) {
-            alreadyOutputMessage = true
-            println '-------------------------------'
-            println 'revision: ' + gitversion.revision
-            println 'branch:   ' + gitversion.branch
-            println 'time:     ' + gitversion.time
-            println '-------------------------------'
-        }
-
-        if (!project.ext.isDebug && null != line) {
-            line.replaceAll((CharSequence) "@GIT_BRANCH@", (CharSequence) gitversion.branch)
-                    .replaceAll((CharSequence) "@GIT_REVERSION@", (CharSequence) gitversion.revision)
-                    .replaceAll((CharSequence) "@BUILD_TIME@", (CharSequence) gitversion.time)
-        } else {
-            line
-        }
-    }
-}
-
-gradle.taskGraph.whenReady {taskGraph ->
-    // 如果是release版本的话,强制两个task执行,不管输出有没有变化
-    if (taskGraph.hasTask(assembleRelease)) {
-        ext.isDebug = false
-        generateReleaseBuildConfig.outputs.upToDateWhen {false}
-        genbuildinfo.outputs.upToDateWhen {false}
-    } else {
-        ext.isDebug = true
-    }
-}
-
-afterEvaluate {
-    generateReleaseBuildConfig.dependsOn(genbuildinfo)
-
-    compileReleaseSources.doLast {
-        'git checkout ./app/src/com/winomtech/androidmisc/utils/BuildInfo.java'.execute().text.trim()
-    }
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':sdk')
+    compile project(':jni')
+    compile 'com.android.support:appcompat-v7:23.0.1'
 }

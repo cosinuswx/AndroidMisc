@@ -1,0 +1,16 @@
+android {
+	signingConfigs {
+		releaseSigning {
+			storeFile file(getRootDir().getPath() + '/release-tools/androidmisc.keystore')
+			storePassword '111'
+			keyAlias 'androidmisc'
+			keyPassword '111'
+		}
+	}
+
+	buildTypes {
+		release {
+			signingConfig signingConfigs.releaseSigning
+		}
+	}
+}

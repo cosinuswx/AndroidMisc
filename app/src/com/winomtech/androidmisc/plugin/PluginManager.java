@@ -1,8 +1,8 @@
 package com.winomtech.androidmisc.plugin;
 
+import com.winom.olog.Log;
 import com.winomtech.androidmisc.app.MMApplication;
 import com.winomtech.androidmisc.sdk.plugin.IPlugin;
-import com.winomtech.androidmisc.sdk.utils.Log;
 
 import java.util.HashMap;
 import java.util.Map;

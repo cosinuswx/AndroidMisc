@@ -2,7 +2,7 @@ package com.winomtech.androidmisc.audio;
 
 import android.media.AudioFormat;
 
-import com.winomtech.androidmisc.sdk.utils.Log;
+import com.winom.olog.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;

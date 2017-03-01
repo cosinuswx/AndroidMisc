@@ -5,7 +5,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Process;
 
-import com.winomtech.androidmisc.sdk.utils.Log;
+import com.winom.olog.Log;
 
 /**
  * @author kevinhuang

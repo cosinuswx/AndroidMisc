@@ -18,9 +18,13 @@ android {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
-
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.winom:olog:1.0.1'
+}
 
 ext {
     isDebug = false

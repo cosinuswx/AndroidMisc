@@ -19,8 +19,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.winom.olog.Log;
 import com.winomtech.androidmisc.R;
-import com.winomtech.androidmisc.sdk.utils.Log;
 
 import java.io.IOException;
 import java.util.List;

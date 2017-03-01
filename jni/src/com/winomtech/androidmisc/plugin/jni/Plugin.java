@@ -1,7 +1,7 @@
 package com.winomtech.androidmisc.plugin.jni;
 
+import com.winom.olog.Log;
 import com.winomtech.androidmisc.sdk.plugin.IPlugin;
-import com.winomtech.androidmisc.sdk.utils.Log;
 
 /**
  * @since 2015-03-07

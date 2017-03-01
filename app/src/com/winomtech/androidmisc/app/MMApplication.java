@@ -2,10 +2,10 @@ package com.winomtech.androidmisc.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.nfc.Tag;
 
+import com.winom.olog.Log;
+import com.winom.olog.LogImpl;
 import com.winomtech.androidmisc.plugin.PluginManager;
-import com.winomtech.androidmisc.sdk.utils.Log;
 import com.winomtech.androidmisc.sdk.utils.MiscUtils;
 import com.winomtech.androidmisc.utils.BuildInfo;
 import com.winomtech.androidmisc.utils.Constants;
@@ -24,7 +24,9 @@ public class MMApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		sContext = this;
-		Log.initImpl(Constants.LOG_SAVE_PATH, "MM");
+		Log.setLogImpl(new LogImpl(Constants.LOG_SAVE_PATH, "MM", ".olog"));
+        Log.setLogLevel(Log.LEVEL_VERBOSE);
+        Log.setLogToLogcat(true);
 		registerPlugin();
 		MiscUtils.mkdirs(Constants.SDCARD_PATH);
 

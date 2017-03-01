@@ -16,9 +16,6 @@ import android.widget.RelativeLayout;
 
 import com.winomtech.androidmisc.R;
 import com.winomtech.androidmisc.rs.ScriptC_Gray;
-import com.winomtech.androidmisc.sdk.utils.Log;
-
-import java.nio.ByteBuffer;
 
 /**
  * @since 2015年10月05日

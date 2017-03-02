@@ -2,7 +2,7 @@ package com.winomtech.androidmisc.plugin.camera;
 
 import android.renderscript.RenderScript;
 
-import com.winomtech.androidmisc.plugin.camera.draw.CameraCompat;
+import com.winomtech.androidmisc.plugin.camera.camera.CameraCompat;
 import com.winom.olog.Log;
 import com.winomtech.androidmisc.common.constants.Constants;
 import com.winomtech.androidmisc.common.cores.AmCore;

@@ -10,12 +10,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.winomtech.androidmisc.plugin.camera.R;
-import com.winomtech.androidmisc.plugin.camera.draw.CameraConfig;
-import com.winomtech.androidmisc.plugin.camera.draw.CameraLoader;
+import com.winomtech.androidmisc.plugin.camera.camera.CameraConfig;
+import com.winomtech.androidmisc.plugin.camera.camera.CameraV1Controller;
 import com.winomtech.androidmisc.plugin.camera.draw.GPUImageView;
 import com.winomtech.androidmisc.plugin.camera.draw.OnSurfaceListener;
 import com.winomtech.androidmisc.plugin.camera.filter.BlackWhiteFilter;
-import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroup;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;
 import com.winom.olog.Log;
@@ -32,7 +31,7 @@ public class CameraFragment extends Fragment {
     private RelativeLayout mRlGPUImageViewCtn;
 
     private GPUImageView mGPUImageView;
-    private CameraLoader mCameraLoader;
+    private CameraV1Controller mCameraV1Controller;
     private GPUImageFilterGroupBase mCurrentFilter = new GPUImageFilterGroup();
 
     @Nullable
@@ -74,18 +73,18 @@ public class CameraFragment extends Fragment {
             Log.i(TAG, "init camera");
 
             CameraConfig exceptConfig = CameraConfig.FullScreen;
-            mCameraLoader = new CameraLoader(getActivity(), true, exceptConfig);
-            boolean ret = mCameraLoader.initCamera();
+            mCameraV1Controller = new CameraV1Controller(getActivity(), true, exceptConfig);
+            boolean ret = mCameraV1Controller.initCamera();
 
             if (false == ret) {
-                Log.e(TAG, "initCamera failed");
+                Log.e(TAG, "initCameraInGLThread failed");
                 return;
             }
-            Log.i(TAG, "initCamera succeed");
+            Log.i(TAG, "initCameraInGLThread succeed");
 
 
-            mGPUImageView.getGPUImage().setUpCamera(mCameraLoader.getCamera(), mCameraLoader.getCameraFrameRate(),
-                    mCameraLoader.getDisplayRotate(), mCameraLoader.isUseFrontFace(), false);
+            mGPUImageView.getGPUImage().setUpCamera(mCameraV1Controller.getCamera(), mCameraV1Controller.getCameraFrameRate(),
+                    mCameraV1Controller.getDisplayRotate(), mCameraV1Controller.isUseFrontFace(), false);
 
             mCurrentFilter = new GPUImageFilterGroup();
             mCurrentFilter.addFilter(new BlackWhiteFilter());
@@ -94,10 +93,10 @@ public class CameraFragment extends Fragment {
 
         @Override
         public void onSurfaceDestroyed() {
-            if (null != mCameraLoader) {
-                mCameraLoader.releaseCamera();
+            if (null != mCameraV1Controller) {
+                mCameraV1Controller.releaseCamera();
             }
-            mCameraLoader = null;
+            mCameraV1Controller = null;
         }
     };
 

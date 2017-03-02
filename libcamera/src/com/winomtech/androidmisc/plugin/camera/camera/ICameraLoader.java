@@ -1,4 +1,4 @@
-package com.winomtech.androidmisc.plugin.camera.draw;
+package com.winomtech.androidmisc.plugin.camera.camera;
 
 /**
  * @author kevinhuang
@@ -15,13 +15,13 @@ public interface ICameraLoader {
      * 初始化摄像头
      * @return 返回摄像头初始化成功还是失败
      */
-    boolean initCamera();
+    boolean initCameraInGLThread();
 
     /**
      * 切换摄像头
      * @return 返回摄像头切换成功还是失败
      */
-    boolean switchCamera();
+    boolean switchCameraInGLThread();
 
     /**
      * 是否当前是使用的前置摄像头
@@ -44,5 +44,7 @@ public interface ICameraLoader {
     /**
      * 关闭摄像头
      */
-    void releaseCamera();
+    void releaseCameraInGLThread();
+
+    void addCallbackBuffer(byte[] data);
 }

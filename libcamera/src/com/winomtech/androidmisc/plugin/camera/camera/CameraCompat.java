@@ -1,4 +1,4 @@
-package com.winomtech.androidmisc.plugin.camera.draw;
+package com.winomtech.androidmisc.plugin.camera.camera;
 
 import android.hardware.Camera;
 

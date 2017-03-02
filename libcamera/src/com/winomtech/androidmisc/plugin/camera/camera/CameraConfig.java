@@ -1,4 +1,4 @@
-package com.winomtech.androidmisc.plugin.camera.draw;
+package com.winomtech.androidmisc.plugin.camera.camera;
 
 /**
  * @author kevinhuang

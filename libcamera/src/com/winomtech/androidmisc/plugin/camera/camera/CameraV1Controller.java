@@ -1,4 +1,4 @@
-package com.winomtech.androidmisc.plugin.camera.draw;
+package com.winomtech.androidmisc.plugin.camera.camera;
 
 import android.app.Activity;
 import android.graphics.Point;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author kevinhuang
  * @since 2015-04-01
  */
-public class CameraLoader implements ICameraLoader {
+public class CameraV1Controller {
     final static String TAG = "CameraLoader";
 
     // 分辨率系数，选取摄像头预览和图片大小的时候，需要与预期值进行比例和差距加权求出差异值，然后取差异最小的
@@ -46,7 +46,7 @@ public class CameraLoader implements ICameraLoader {
     int mMaxHeight;
     int mFrameRate;
 
-    public CameraLoader(Activity activity, boolean useFrontFace, CameraConfig config) {
+    public CameraV1Controller(Activity activity, boolean useFrontFace, CameraConfig config) {
         mActivity = activity;
         mFocusEnd = true;
 
@@ -326,7 +326,7 @@ public class CameraLoader implements ICameraLoader {
     }
 
     boolean initCamera(boolean useFrontFace) {
-        Log.d(TAG, "initCamera");
+        Log.d(TAG, "initCameraInGLThread");
         mCamera = safeOpenCamera(useFrontFace);
         if (null == mCamera) {
             Log.e(TAG, "open camera failed");
@@ -383,17 +383,12 @@ public class CameraLoader implements ICameraLoader {
                 mCamera.setPreviewCallback(null);
                 mCamera.release();
             } catch (Exception e) {
-                Log.e(TAG, "exception on releaseCamera, " + e.getMessage());
+                Log.e(TAG, "exception on releaseCameraInGLThread, " + e.getMessage());
             }
         }
         mCamera = null;
     }
 
-    /**
-     * 这个仅仅给GPUImage的接口使用
-     *
-     * @return 返回camera
-     */
     public Camera getCamera() {
         return mCamera;
     }

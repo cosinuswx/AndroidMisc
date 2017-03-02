@@ -29,5 +29,5 @@ repositories {
 }
 
 dependencies {
-    compile project(':sdk')
+    compile project(':libcommon')
 }

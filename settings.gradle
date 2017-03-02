@@ -1,3 +1,4 @@
 include ':app'
-include ':sdk'
+include ':libcamera'
+include ':libcommon'
 include ':jni'

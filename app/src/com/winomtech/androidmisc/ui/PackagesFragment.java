@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.winom.olog.Log;
 import com.winomtech.androidmisc.R;
-import com.winomtech.androidmisc.sdk.asynccomponent.ITask;
-import com.winomtech.androidmisc.sdk.asynccomponent.TaskExecutor;
+import com.winomtech.androidmisc.common.asynccomponent.ITask;
+import com.winomtech.androidmisc.common.asynccomponent.TaskExecutor;
 import com.winomtech.androidmisc.view.TouchToShowLayout;
 
 import java.util.ArrayList;

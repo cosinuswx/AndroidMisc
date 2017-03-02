@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
-import com.winomtech.androidmisc.sdk.utils.SmTimer;
+import com.winomtech.androidmisc.common.utils.SmTimer;
 
 /**
  * @since 2015年11月05日

@@ -12,6 +12,7 @@
 	<string name="entry_svg_drawable">SVG图像测试</string>
 	<string name="entry_render_script_exp">RS测试</string>
     <string name="entry_glide_custom_format">Glide自定义格式测试</string>
+    <string name="entry_gpuimage">GPUImage</string>
 
 	<string name="str_please_waitting">正在处理中，请稍候&#8230;</string>
 	<string name="str_progressing" formatted="false">正在处理中，第%d个（共%d个）</string>

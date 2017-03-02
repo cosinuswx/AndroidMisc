@@ -1,6 +1,6 @@
 package com.winomtech.androidmisc.encpic;
 
-import com.winomtech.androidmisc.sdk.utils.MiscUtils;
+import com.winomtech.androidmisc.common.utils.MiscUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

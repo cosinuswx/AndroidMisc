@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.bumptech.glide.load.Encoder;
 import com.bumptech.glide.util.ByteArrayPool;
-import com.winomtech.androidmisc.sdk.utils.MiscUtils;
+import com.winomtech.androidmisc.common.utils.MiscUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

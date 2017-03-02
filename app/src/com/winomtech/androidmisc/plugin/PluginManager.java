@@ -1,8 +1,8 @@
 package com.winomtech.androidmisc.plugin;
 
 import com.winom.olog.Log;
-import com.winomtech.androidmisc.app.MMApplication;
-import com.winomtech.androidmisc.sdk.plugin.IPlugin;
+import com.winomtech.androidmisc.app.AmApplication;
+import com.winomtech.androidmisc.common.plugin.IPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +19,8 @@ public class PluginManager {
 	public static boolean loadPlugin(String pluginName) {
 		IPlugin plugin = null;
 		try {
-			ClassLoader clsLoader = MMApplication.getContext().getClass().getClassLoader();
-			Class<?> clsPlugin = clsLoader.loadClass(MMApplication.getSourcePkgName() + ".plugin." + pluginName + ".Plugin");
+			ClassLoader clsLoader = AmApplication.getContext().getClass().getClassLoader();
+			Class<?> clsPlugin = clsLoader.loadClass(AmApplication.getSourcePkgName() + ".plugin." + pluginName + ".Plugin");
 			plugin = (IPlugin) clsPlugin.newInstance();
 		} catch (ClassNotFoundException e) {
 			Log.e(TAG, "loadPlugin failed: " + e.getMessage());

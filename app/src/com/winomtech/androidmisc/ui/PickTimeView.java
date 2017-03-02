@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.winomtech.androidmisc.R;
-import com.winomtech.androidmisc.sdk.utils.SmTimer;
+import com.winomtech.androidmisc.common.utils.SmTimer;
 
 /**
  * @since 2015-03-27

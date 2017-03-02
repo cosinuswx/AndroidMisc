@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.winomtech.androidmisc.plugin.camera.ui.CameraFragment;
 import com.winomtech.androidmisc.R;
 
 import java.lang.reflect.Constructor;
@@ -45,6 +46,7 @@ public class LauncherFragment extends Fragment {
 		sEntryInfoList.add(new EntryInfo(R.string.entry_svg_drawable, SVGDrawableFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_render_script_exp, RenderScriptFragment.class));
         sEntryInfoList.add(new EntryInfo(R.string.entry_glide_custom_format, GlideCustomFormatFragment.class));
+        sEntryInfoList.add(new EntryInfo(R.string.entry_gpuimage, CameraFragment.class));
 	}
 
 	@Override

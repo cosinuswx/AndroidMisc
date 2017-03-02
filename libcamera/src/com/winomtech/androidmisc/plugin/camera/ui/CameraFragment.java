@@ -12,6 +12,8 @@ import android.widget.RelativeLayout;
 import com.winomtech.androidmisc.plugin.camera.R;
 import com.winomtech.androidmisc.plugin.camera.camera.CameraConfig;
 import com.winomtech.androidmisc.plugin.camera.camera.CameraV1Controller;
+import com.winomtech.androidmisc.plugin.camera.camera.CameraV1Loader;
+import com.winomtech.androidmisc.plugin.camera.camera.ICameraLoader;
 import com.winomtech.androidmisc.plugin.camera.draw.GPUImageView;
 import com.winomtech.androidmisc.plugin.camera.draw.OnSurfaceListener;
 import com.winomtech.androidmisc.plugin.camera.filter.BlackWhiteFilter;
@@ -31,7 +33,7 @@ public class CameraFragment extends Fragment {
     private RelativeLayout mRlGPUImageViewCtn;
 
     private GPUImageView mGPUImageView;
-    private CameraV1Controller mCameraV1Controller;
+    private ICameraLoader mCameraLoader;
     private GPUImageFilterGroupBase mCurrentFilter = new GPUImageFilterGroup();
 
     @Nullable
@@ -73,8 +75,8 @@ public class CameraFragment extends Fragment {
             Log.i(TAG, "init camera");
 
             CameraConfig exceptConfig = CameraConfig.FullScreen;
-            mCameraV1Controller = new CameraV1Controller(getActivity(), true, exceptConfig);
-            boolean ret = mCameraV1Controller.initCamera();
+            mCameraLoader = new CameraV1Loader(getActivity(), true, exceptConfig);
+            boolean ret = mCameraLoader.initCameraInGLThread();
 
             if (false == ret) {
                 Log.e(TAG, "initCameraInGLThread failed");
@@ -83,8 +85,8 @@ public class CameraFragment extends Fragment {
             Log.i(TAG, "initCameraInGLThread succeed");
 
 
-            mGPUImageView.getGPUImage().setUpCamera(mCameraV1Controller.getCamera(), mCameraV1Controller.getCameraFrameRate(),
-                    mCameraV1Controller.getDisplayRotate(), mCameraV1Controller.isUseFrontFace(), false);
+            mGPUImageView.getGPUImage().setUpCamera(mCameraLoader, mCameraLoader.getCameraFrameRate(),
+                    mCameraLoader.getDisplayRotate(), mCameraLoader.isUseFrontFace(), false);
 
             mCurrentFilter = new GPUImageFilterGroup();
             mCurrentFilter.addFilter(new BlackWhiteFilter());
@@ -93,10 +95,10 @@ public class CameraFragment extends Fragment {
 
         @Override
         public void onSurfaceDestroyed() {
-            if (null != mCameraV1Controller) {
-                mCameraV1Controller.releaseCamera();
+            if (null != mCameraLoader) {
+                mCameraLoader.releaseCameraInGLThread();
             }
-            mCameraV1Controller = null;
+            mCameraLoader = null;
         }
     };
 

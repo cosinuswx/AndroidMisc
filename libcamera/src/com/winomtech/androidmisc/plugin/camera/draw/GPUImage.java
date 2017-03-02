@@ -26,6 +26,7 @@ import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.view.ViewTreeObserver;
 
+import com.winomtech.androidmisc.plugin.camera.camera.ICameraLoader;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroup;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;
@@ -47,7 +48,6 @@ public class GPUImage {
     private GLSurfaceView mGlSurfaceView;
     public Bitmap mCurrentBitmap;
 
-    ByteBuffer mPreviewBuf;
     int mSurfaceFixedWidth = DEFAULT_SURFACE_FIXED_WIDTH;
     int mSurfaceFixedHeight = DEFAULT_SURFACE_FIXED_HEIGHT;
 
@@ -139,26 +139,23 @@ public class GPUImage {
     /**
      * Sets the up camera to be connected to GPUImage to get a filtered preview.
      *
-     * @param camera the camera
      * @param frameRate camera frame rate which we excepted
      * @param degrees by how many degrees the image should be rotated
      * @param flipHorizontal if the image should be flipped horizontally
      * @param flipVertical if the image should be flipped vertically
      */
-    public void setUpCamera(final Camera camera, int frameRate, final int degrees, final boolean flipHorizontal,
-            final boolean flipVertical) {
-        if (null == camera) {
+    public void setUpCamera(final ICameraLoader cameraLoader,
+                            int frameRate,
+                            final int degrees,
+                            final boolean flipHorizontal,
+                            final boolean flipVertical) {
+        if (null == cameraLoader) {
             Log.e(TAG, "setUpCamera failed, camera is null");
             return;
         }
-   
-		// allocate memory for preview
-        Camera.Size size = camera.getParameters().getPreviewSize();
-        mPreviewBuf = ByteBuffer.allocateDirect(size.width * size.height * 3 / 2);
 
         mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         mRenderer.setGlSurfaceView(mGlSurfaceView);
-        setUpCameraGingerbread(camera, mPreviewBuf.array());
         Rotation rotation = Rotation.NORMAL;
         switch (degrees) {
             case 90:
@@ -173,11 +170,8 @@ public class GPUImage {
         }
         mRenderer.setRotationCamera(rotation, flipHorizontal, flipVertical);
         mRenderer.setFrameRate(frameRate);
-    }
 
-    @TargetApi(11)
-    private void setUpCameraGingerbread(final Camera camera, byte[] data) {
-        mRenderer.setUpSurfaceTexture(camera, data);
+        cameraLoader.setPreviewCallback(mRenderer);
     }
 
     /**

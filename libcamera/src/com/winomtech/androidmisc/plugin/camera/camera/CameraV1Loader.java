@@ -6,6 +6,7 @@ import android.hardware.Camera;
 import android.opengl.GLES20;
 
 import com.winom.olog.Log;
+import com.winomtech.androidmisc.common.utils.Size;
 
 import java.nio.ByteBuffer;
 
@@ -19,6 +20,7 @@ public class CameraV1Loader implements ICameraLoader, Camera.PreviewCallback {
     CameraV1Controller mCameraController;
     SurfaceTexture mSurfaceTexture = null;
     ByteBuffer mPreviewBuf;
+    Size mPreviewSize;
 
     CameraPreviewCallback mPreviewCallback;
 
@@ -28,6 +30,11 @@ public class CameraV1Loader implements ICameraLoader, Camera.PreviewCallback {
 
     public void setPreviewCallback(CameraPreviewCallback callback) {
         mPreviewCallback = callback;
+    }
+
+    @Override
+    public Size getPreviewSize() {
+        return mPreviewSize;
     }
 
     @Override
@@ -41,12 +48,17 @@ public class CameraV1Loader implements ICameraLoader, Camera.PreviewCallback {
     }
 
     private void setUpSurfaceTexture() {
+        if (null != mSurfaceTexture) {
+            mSurfaceTexture.release();
+        }
+
         int[] textures = new int[1];
         GLES20.glGenTextures(1, textures, 0);
         mSurfaceTexture = new SurfaceTexture(textures[0]);
 
         Camera camera = mCameraController.getCamera();
         Camera.Size size = camera.getParameters().getPreviewSize();
+        mPreviewSize = new Size(size.width, size.height);
         mPreviewBuf = ByteBuffer.allocateDirect(size.width * size.height * 3 / 2);
 
         try {
@@ -80,6 +92,16 @@ public class CameraV1Loader implements ICameraLoader, Camera.PreviewCallback {
     @Override
     public void addCallbackBuffer(byte[] data) {
         mCameraController.getCamera().addCallbackBuffer(data);
+    }
+
+    @Override
+    public int getCameraFrameRate() {
+        return mCameraController.getCameraFrameRate();
+    }
+
+    @Override
+    public int getDisplayRotate() {
+        return mCameraController.getDisplayRotate();
     }
 
     @Override

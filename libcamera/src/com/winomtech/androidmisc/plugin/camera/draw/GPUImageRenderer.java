@@ -22,13 +22,14 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.hardware.Camera.PreviewCallback;
-import android.hardware.Camera.Size;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.support.annotation.IntDef;
 
+import com.winomtech.androidmisc.common.utils.Size;
 import com.winomtech.androidmisc.plugin.camera.SubcoreCamera;
+import com.winomtech.androidmisc.plugin.camera.camera.CameraPreviewCallback;
+import com.winomtech.androidmisc.plugin.camera.camera.ICameraLoader;
 import com.winomtech.androidmisc.plugin.camera.filter.FilterConstants;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroup;
@@ -52,12 +53,11 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 @TargetApi(11)
-public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback {
+public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCallback {
     private static final String TAG = "GPUImageRenderer";
 
     @IntDef(value = {
             CMD_PROCESS_FRAME,
-            CMD_SETUP_SURFACE_TEXTURE,
             CMD_SET_FILTER,
             CMD_DELETE_IMAGE,
             CMD_SET_IMAGE_BITMAP,
@@ -70,7 +70,6 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
     }
 
     final static int CMD_PROCESS_FRAME = 0;
-    final static int CMD_SETUP_SURFACE_TEXTURE = 1;
     final static int CMD_SET_FILTER = 2;
     final static int CMD_DELETE_IMAGE = 3;
     final static int CMD_SET_IMAGE_BITMAP = 4;
@@ -114,7 +113,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
     GPUImage.ScaleType mScaleType = GPUImage.ScaleType.CENTER_CROP;
 
     // 用来缓存当前摄像头的信息，这里假设了一个camera的实例的预览大小一旦设置了，就不会再变
-    Camera mCacheCamera = null;
+    ICameraLoader mCacheCamera = null;
     Point mCachePrevSize;
 
     RsYuv mRsYuv;
@@ -247,10 +246,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
 
                 switch (cmdItem.cmdId) {
                     case CMD_PROCESS_FRAME:
-                        processFrame((byte[]) cmdItem.param1, (Camera) cmdItem.param2);
-                        break;
-                    case CMD_SETUP_SURFACE_TEXTURE:
-                        setUpSurfaceTextureInternal((Camera) cmdItem.param1, (byte[]) cmdItem.param2);
+                        processFrame((byte[]) cmdItem.param1, (ICameraLoader) cmdItem.param2);
                         break;
                     case CMD_SET_FILTER:
                         setFilterInternal((GPUImageFilterGroupBase) cmdItem.param1);
@@ -290,7 +286,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
         mGLTextureId = OpenGlUtils.NO_TEXTURE;
     }
 
-    void processFrame(final byte[] data, final Camera camera) {
+    void processFrame(final byte[] data, final ICameraLoader cameraLoader) {
         if (mImageWidth != mCachePrevSize.x || mImageHeight != mCachePrevSize.y) {
             mImageWidth = mCachePrevSize.x;
             mImageHeight = mCachePrevSize.y;
@@ -301,27 +297,8 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
 
         mGLTextureId = OpenGlUtils.loadTexture(mGLRgbBuffer, mCachePrevSize, mGLTextureId);
 
-        camera.addCallbackBuffer(data);
+        cameraLoader.addCallbackBuffer(data);
         mGLRgbBuffer.clear();
-    }
-
-    void setUpSurfaceTextureInternal(final Camera camera, byte[] data) {
-        if (null == camera) {
-            Log.e(TAG, "setUpSurfaceTexture, camera is null");
-            return;
-        }
-
-        int[] textures = new int[1];
-        GLES20.glGenTextures(1, textures, 0);
-        mSurfaceTexture = new SurfaceTexture(textures[0]);
-        try {
-            camera.addCallbackBuffer(data);
-            camera.setPreviewTexture(mSurfaceTexture);
-            camera.setPreviewCallbackWithBuffer(GPUImageRenderer.this);
-            camera.startPreview();
-        } catch (Exception e) {
-            Log.e(TAG, "setup camera failed, " + e.getMessage());
-        }
     }
 
     void setFilterInternal(final GPUImageFilterGroupBase filter) {
@@ -355,10 +332,10 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
     }
 
     @Override
-    public void onPreviewFrame(final byte[] data, final Camera camera) {
+    public void onPreviewFrame(final byte[] data, ICameraLoader cameraLoader) {
         // 如果还没到下一帧所要求的时间点,则丢弃这一帧
         if ((System.currentTimeMillis() - mFirstFrameTick) < (mFrameCount + 1) * (1000 / mCameraFrameRate)) {
-            camera.addCallbackBuffer(data);
+            cameraLoader.addCallbackBuffer(data);
             Log.v(TAG, "too many frame from camera, drop it");
             return;
         }
@@ -368,9 +345,9 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
         }
         mFrameCount++;
 
-        if (mCacheCamera != camera) {
-            mCacheCamera = camera;
-            Size previewSize = camera.getParameters().getPreviewSize();
+        if (mCacheCamera != cameraLoader) {
+            mCacheCamera = cameraLoader;
+            Size previewSize = cameraLoader.getPreviewSize();
             mCachePrevSize = new Point(previewSize.width, previewSize.height);
         }
 
@@ -382,12 +359,8 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
             runOnDraw(CMD_RESET_RS_SIZE, mCachePrevSize.x, mCachePrevSize.y);
         }
 
-        runOnDraw(CMD_PROCESS_FRAME, data, camera);
+        runOnDraw(CMD_PROCESS_FRAME, data, cameraLoader);
         mSurfaceView.requestRender();
-    }
-
-    public void setUpSurfaceTexture(final Camera camera, byte[] data) {
-        runOnDraw(CMD_SETUP_SURFACE_TEXTURE, camera, data);
     }
 
     public void setFilter(final GPUImageFilter filter) {

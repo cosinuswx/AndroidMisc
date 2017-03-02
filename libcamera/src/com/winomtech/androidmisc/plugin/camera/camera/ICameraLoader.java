@@ -1,5 +1,7 @@
 package com.winomtech.androidmisc.plugin.camera.camera;
 
+import com.winomtech.androidmisc.common.utils.Size;
+
 /**
  * @author kevinhuang
  * @since 2017-03-02
@@ -46,5 +48,31 @@ public interface ICameraLoader {
      */
     void releaseCameraInGLThread();
 
+    /**
+     * 将在{@link CameraPreviewCallback#onPreviewFrame(byte[], ICameraLoader)}回调时的数据参数，
+     * 返回到CameraLoader中重复利用。
+     * @param data 之前返回的数据
+     */
     void addCallbackBuffer(byte[] data);
+
+    /**
+     * 返回当前摄像头设置的帧率
+     */
+    int getCameraFrameRate();
+
+    /**
+     * 返回当前显示的旋转角度（根据摄像头角度和屏幕角度计算出来的角度）
+     */
+    int getDisplayRotate();
+
+    /**
+     * 设置数据回调的监听
+     * @param callback 数据回调的监听
+     */
+    void setPreviewCallback(CameraPreviewCallback callback);
+
+    /**
+     * 返回预览尺寸
+     */
+    Size getPreviewSize();
 }

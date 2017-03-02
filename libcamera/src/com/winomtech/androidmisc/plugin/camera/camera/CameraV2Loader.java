@@ -76,7 +76,67 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
     @Override
     public boolean initCameraInGLThread() {
         startBackgroundThread();
+        return openCamera();
+    }
 
+    @Override
+    public boolean switchCameraInGLThread() {
+        closeCamera();
+        mUseFrontFace = !mUseFrontFace;
+        return openCamera();
+    }
+
+    @Override
+    public boolean isUseFrontFace() {
+        return mUseFrontFace;
+    }
+
+    @Override
+    public void switchAutoFlash(boolean open) {
+
+    }
+
+    @Override
+    public void switchLight(boolean open) {
+
+    }
+
+    @Override
+    public void setZoom(float factor) {
+    }
+
+    @Override
+    public void releaseCameraInGLThread() {
+        closeCamera();
+        stopBackgroundThread();
+    }
+
+    @Override
+    public void addCallbackBuffer(byte[] data) {
+        mBufInUsing = false;
+    }
+
+    @Override
+    public int getCameraFrameRate() {
+        return 30;
+    }
+
+    @Override
+    public int getDisplayRotate() {
+        return mDisplayRotate;
+    }
+
+    @Override
+    public void setPreviewCallback(CameraPreviewCallback callback) {
+        mPreviewCallback = callback;
+    }
+
+    @Override
+    public Size getPreviewSize() {
+        return mPreviewSize;
+    }
+
+    private boolean openCamera() {
         CameraManager manager = (CameraManager) mActivity.getSystemService(Context.CAMERA_SERVICE);
         try {
             String chooseCameraId = null;
@@ -122,62 +182,8 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             Log.e(TAG, "open camera been interrupt, errMsg: " + e.getMessage());
             return false;
         }
-
+        
         return true;
-    }
-
-    @Override
-    public boolean switchCameraInGLThread() {
-        return false;
-    }
-
-    @Override
-    public boolean isUseFrontFace() {
-        return mUseFrontFace;
-    }
-
-    @Override
-    public void switchAutoFlash(boolean open) {
-
-    }
-
-    @Override
-    public void switchLight(boolean open) {
-
-    }
-
-    @Override
-    public void setZoom(float factor) {
-    }
-
-    @Override
-    public void releaseCameraInGLThread() {
-        stopBackgroundThread();
-    }
-
-    @Override
-    public void addCallbackBuffer(byte[] data) {
-        mBufInUsing = false;
-    }
-
-    @Override
-    public int getCameraFrameRate() {
-        return 30;
-    }
-
-    @Override
-    public int getDisplayRotate() {
-        return mDisplayRotate;
-    }
-
-    @Override
-    public void setPreviewCallback(CameraPreviewCallback callback) {
-        mPreviewCallback = callback;
-    }
-
-    @Override
-    public Size getPreviewSize() {
-        return mPreviewSize;
     }
 
     private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
@@ -371,6 +377,28 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
         if (null != mPreviewCallback) {
             mBufInUsing = true;
             mPreviewCallback.onPreviewFrame(mPreviewBuf.array(), this);
+        }
+    }
+
+    private void closeCamera() {
+        try {
+            mCameraOpenCloseLock.acquire();
+            if (null != mCaptureSession) {
+                mCaptureSession.close();
+                mCaptureSession = null;
+            }
+            if (null != mCameraDevice) {
+                mCameraDevice.close();
+                mCameraDevice = null;
+            }
+            if (null != mImageReader) {
+                mImageReader.close();
+                mImageReader = null;
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted while trying to lock camera closing.", e);
+        } finally {
+            mCameraOpenCloseLock.release();
         }
     }
 }

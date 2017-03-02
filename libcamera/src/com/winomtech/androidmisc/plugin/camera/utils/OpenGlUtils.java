@@ -26,9 +26,9 @@ import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
-import com.winomtech.androidmisc.plugin.camera.filter.FilterConstants;
 import com.winomtech.androidmisc.common.utils.ApiLevel;
 import com.winomtech.androidmisc.common.utils.MiscUtils;
+import com.winomtech.androidmisc.plugin.camera.filter.FilterConstants;
 
 import java.nio.Buffer;
 import java.nio.IntBuffer;

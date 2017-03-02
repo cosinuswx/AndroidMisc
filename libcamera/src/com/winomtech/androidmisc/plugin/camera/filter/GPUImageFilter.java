@@ -19,8 +19,8 @@ package com.winomtech.androidmisc.plugin.camera.filter;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 
-import com.winomtech.androidmisc.plugin.camera.utils.OpenGlUtils;
 import com.winom.olog.Log;
+import com.winomtech.androidmisc.plugin.camera.utils.OpenGlUtils;
 
 import java.nio.FloatBuffer;
 import java.util.LinkedList;

@@ -21,11 +21,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.os.SystemClock;
 import android.support.annotation.IntDef;
 
+import com.winom.olog.Log;
+import com.winomtech.androidmisc.common.utils.ObjectCacher;
 import com.winomtech.androidmisc.common.utils.Size;
 import com.winomtech.androidmisc.plugin.camera.SubcoreCamera;
 import com.winomtech.androidmisc.plugin.camera.camera.CameraPreviewCallback;
@@ -38,8 +40,6 @@ import com.winomtech.androidmisc.plugin.camera.utils.OpenGlUtils;
 import com.winomtech.androidmisc.plugin.camera.utils.Rotation;
 import com.winomtech.androidmisc.plugin.camera.utils.RsYuv;
 import com.winomtech.androidmisc.plugin.camera.utils.TextureRotationUtil;
-import com.winom.olog.Log;
-import com.winomtech.androidmisc.common.utils.ObjectCacher;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -334,14 +334,14 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
     @Override
     public void onPreviewFrame(final byte[] data, ICameraLoader cameraLoader) {
         // 如果还没到下一帧所要求的时间点,则丢弃这一帧
-        if ((System.currentTimeMillis() - mFirstFrameTick) < (mFrameCount + 1) * (1000 / mCameraFrameRate)) {
+        if ((SystemClock.uptimeMillis() - mFirstFrameTick) < (mFrameCount + 1) * (1000 / mCameraFrameRate)) {
             cameraLoader.addCallbackBuffer(data);
             Log.v(TAG, "too many frame from camera, drop it");
             return;
         }
 
         if (-1 == mFirstFrameTick) {
-            mFirstFrameTick = System.currentTimeMillis();
+            mFirstFrameTick = SystemClock.uptimeMillis();
         }
         mFrameCount++;
 

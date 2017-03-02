@@ -18,10 +18,10 @@ package com.winomtech.androidmisc.plugin.camera.filter;
 
 import android.opengl.GLES20;
 
+import com.winom.olog.Log;
 import com.winomtech.androidmisc.plugin.camera.utils.OpenGlUtils;
 import com.winomtech.androidmisc.plugin.camera.utils.Rotation;
 import com.winomtech.androidmisc.plugin.camera.utils.TextureRotationUtil;
-import com.winom.olog.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

@@ -16,24 +16,20 @@
 
 package com.winomtech.androidmisc.plugin.camera.draw;
 
-import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
-import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.view.ViewTreeObserver;
 
+import com.winom.olog.Log;
 import com.winomtech.androidmisc.plugin.camera.camera.ICameraLoader;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroup;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;
 import com.winomtech.androidmisc.plugin.camera.utils.Rotation;
-import com.winom.olog.Log;
-
-import java.nio.ByteBuffer;
 
 /**
  * The main accessor for GPUImage functionality. This class helps to do common

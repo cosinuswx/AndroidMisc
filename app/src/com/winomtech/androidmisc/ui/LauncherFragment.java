@@ -12,8 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.winomtech.androidmisc.plugin.camera.ui.CameraFragment;
 import com.winomtech.androidmisc.R;
+import com.winomtech.androidmisc.plugin.camera.ui.CameraFragment;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;

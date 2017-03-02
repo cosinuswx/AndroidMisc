@@ -7,8 +7,8 @@ import com.winom.olog.Log;
 import com.winom.olog.LogImpl;
 import com.winomtech.androidmisc.common.constants.Constants;
 import com.winomtech.androidmisc.common.cores.AmCore;
-import com.winomtech.androidmisc.plugin.PluginManager;
 import com.winomtech.androidmisc.common.utils.MiscUtils;
+import com.winomtech.androidmisc.plugin.PluginManager;
 import com.winomtech.androidmisc.utils.BuildInfo;
 
 /**

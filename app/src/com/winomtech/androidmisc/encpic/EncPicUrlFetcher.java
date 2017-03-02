@@ -1,14 +1,11 @@
 package com.winomtech.androidmisc.encpic;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.data.DataFetcher;
-import com.bumptech.glide.load.model.GenericLoaderFactory;
 import com.bumptech.glide.load.model.ModelLoader;
-import com.bumptech.glide.load.model.ModelLoaderFactory;
 import com.bumptech.glide.util.ContentLengthInputStream;
 
 import java.io.ByteArrayOutputStream;

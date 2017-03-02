@@ -26,9 +26,9 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.FrameLayout;
 
+import com.winom.olog.Log;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;
-import com.winom.olog.Log;
 
 import java.nio.IntBuffer;
 import java.util.concurrent.Semaphore;

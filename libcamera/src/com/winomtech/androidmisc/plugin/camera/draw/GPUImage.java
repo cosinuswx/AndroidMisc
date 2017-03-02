@@ -56,14 +56,14 @@ public class GPUImage {
      *
      * @param context the context
      */
-    public GPUImage(final Context context) {
+    public GPUImage(final Context context, OnSurfaceListener listener) {
         if (!supportsOpenGLES2(context)) {
             throw new IllegalStateException("OpenGL ES 2.0 is not supported on this phone.");
         } 
         mCurrentBitmap = null;
         GPUImageFilterGroupBase groupBase = new GPUImageFilterGroup();
         groupBase.addFilter(new GPUImageFilter());
-        mRenderer = new GPUImageRenderer(groupBase);
+        mRenderer = new GPUImageRenderer(groupBase, listener);
     }
 
     public GPUImageRenderer getRenderer() {

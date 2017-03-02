@@ -94,6 +94,8 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
     int mGLTextureId;
 
     SurfaceTexture mSurfaceTexture = null;
+    OnSurfaceListener mSurfaceListener;
+
     final FloatBuffer mGLCubeBuffer;
     final FloatBuffer mGLTextureBuffer;
     ByteBuffer mGLRgbBuffer;
@@ -132,9 +134,10 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
         }
     };
 
-    public GPUImageRenderer(final GPUImageFilterGroupBase filter) {
+    public GPUImageRenderer(final GPUImageFilterGroupBase filter, OnSurfaceListener listener) {
         super();
 
+        mSurfaceListener = listener;
         mRunOnDraw = new LinkedList<CmdItem>();
         mRunOnDrawEnd = new LinkedList<CmdItem>();
         mGLTextureId = OpenGlUtils.NO_TEXTURE;
@@ -175,6 +178,10 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
         GLES20.glClearColor(0, 0, 0, 1);
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
+        if (null != mSurfaceListener) {
+            mSurfaceListener.onSurfaceCreated();
+        }
+ 
         // surface被重建,也就意味着Context发生了变化,则需要将当前的filter全部清理掉
         if (null != mFilter) {
             GPUImageFilterGroup group = new GPUImageFilterGroup();
@@ -195,6 +202,19 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
 
         if (null != mFilter) {
             mFilter.onOutputSizeChanged(width, height);
+        }
+    }
+
+    public void onSurfaceDestroyed() {
+        Log.i(TAG, "onSurfaceDestroyed %b", null != mFilter);
+
+        if (null != mFilter) {
+            mFilter.destroy();
+            mFilter = null;
+        }
+
+        if (null != mSurfaceListener) {
+            mSurfaceListener.onSurfaceDestroyed();
         }
     }
 
@@ -512,8 +532,8 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
         return mOutputHeight;
     }
 
-    public void destroyFilters() {
-        Log.i(TAG, "destroyFilters %b", null != mSurfaceView);
+    public void destroySurface() {
+        Log.i(TAG, "destroySurface %b", null != mSurfaceView);
         if (null == mSurfaceView) {
             return;
         }
@@ -521,12 +541,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
         mSurfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
-                Log.i(TAG, "destroyFilters real %b", null != mFilter);
-
-                if (null != mFilter) {
-                    mFilter.destroy();
-                    mFilter = null;
-                }
+                onSurfaceDestroyed();
             }
         });
     }

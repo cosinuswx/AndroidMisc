@@ -44,21 +44,21 @@ public class GPUImageView extends FrameLayout {
     GestureDetector mGestureDector;
     ScaleGestureDetector mScaleGestureDector;
 
-    public GPUImageView(Context context) {
+    public GPUImageView(Context context, OnSurfaceListener listener) {
         super(context);
-        init(context, null);
+        init(context, null, listener);
     }
 
     public GPUImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
+        init(context, attrs, null);
     }
 
-    private void init(Context context, AttributeSet attrs) {
+    private void init(Context context, AttributeSet attrs, OnSurfaceListener listener) {
         mGLSurfaceView = new GLSurfaceView(context, attrs);
         addView(mGLSurfaceView);
 
-        mGPUImage = new GPUImage(getContext());
+        mGPUImage = new GPUImage(getContext(), listener);
         mGPUImage.setGLSurfaceView(mGLSurfaceView);
 
         mGestureDector = new GestureDetector(context, mGestureLsn);
@@ -185,7 +185,7 @@ public class GPUImageView extends FrameLayout {
     public void onPause() {
         Log.i(TAG, "pause gpuimage view and destroy filters");
 
-        mGPUImage.getRenderer().destroyFilters();
+        mGPUImage.getRenderer().destroySurface();
         mGLSurfaceView.onPause();
     }
 

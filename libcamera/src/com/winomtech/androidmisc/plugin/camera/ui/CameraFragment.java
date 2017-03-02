@@ -13,6 +13,7 @@ import com.winomtech.androidmisc.plugin.camera.R;
 import com.winomtech.androidmisc.plugin.camera.draw.CameraConfig;
 import com.winomtech.androidmisc.plugin.camera.draw.CameraLoader;
 import com.winomtech.androidmisc.plugin.camera.draw.GPUImageView;
+import com.winomtech.androidmisc.plugin.camera.draw.OnSurfaceListener;
 import com.winomtech.androidmisc.plugin.camera.filter.BlackWhiteFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroup;
@@ -46,57 +47,32 @@ public class CameraFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        initCameraDelay(300);
+        initGPUImageView();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        cancelReleaseCamera();
-        releaseCamera();
+        removeGPUImageView();
     }
 
-    protected void cancelReleaseCamera() {
-        mUiHandler.removeCallbacks(mReleaseRunnable);
-    }
-
-    protected void cancelInitCamera() {
-        mUiHandler.removeCallbacks(mInitRunnable);
-    }
-
-    public void releaseCameraDelay(long delay) {
+    private void initGPUImageView() {
         if (null != mGPUImageView) {
-            mGPUImageView.setVisibility(View.INVISIBLE);
+            return;
         }
-        cancelInitCamera();
-        cancelReleaseCamera();
-        mUiHandler.postDelayed(mReleaseRunnable, delay);
+
+        // GPUImage是先做的翻转，再做的旋转
+        mGPUImageView = new GPUImageView(getActivity(), mSurfaceListener);
+        mRlGPUImageViewCtn.addView(mGPUImageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    public void initCameraDelay(long delay) {
-        if (null != mGPUImageView) {
-            mGPUImageView.setVisibility(View.VISIBLE);
-        }
-        cancelInitCamera();
-        cancelReleaseCamera();
-        mUiHandler.postDelayed(mInitRunnable, delay);
-    }
+    OnSurfaceListener mSurfaceListener = new OnSurfaceListener() {
 
-    Runnable mReleaseRunnable = new Runnable() {
         @Override
-        public void run() {
-            releaseCamera();
-        }
-    };
-
-    Runnable mInitRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (null != mCameraLoader) {
-                return;
-            }
-
+        public void onSurfaceCreated() {
             Log.i(TAG, "init camera");
+
             CameraConfig exceptConfig = CameraConfig.FullScreen;
             mCameraLoader = new CameraLoader(getActivity(), true, exceptConfig);
             boolean ret = mCameraLoader.initCamera();
@@ -107,10 +83,6 @@ public class CameraFragment extends Fragment {
             }
             Log.i(TAG, "initCamera succeed");
 
-            // GPUImage是先做的翻转，再做的旋转
-            mGPUImageView = new GPUImageView(getActivity());
-            mRlGPUImageViewCtn.addView(mGPUImageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
 
             mGPUImageView.getGPUImage().setUpCamera(mCameraLoader.getCamera(), mCameraLoader.getCameraFrameRate(),
                     mCameraLoader.getDisplayRotate(), mCameraLoader.isUseFrontFace(), false);
@@ -119,14 +91,17 @@ public class CameraFragment extends Fragment {
             mCurrentFilter.addFilter(new BlackWhiteFilter());
             mGPUImageView.setFilter(mCurrentFilter);
         }
+
+        @Override
+        public void onSurfaceDestroyed() {
+            if (null != mCameraLoader) {
+                mCameraLoader.releaseCamera();
+            }
+            mCameraLoader = null;
+        }
     };
 
-    protected void releaseCamera() {
-        if (null != mCameraLoader) {
-            mCameraLoader.releaseCamera();
-        }
-        mCameraLoader = null;
-
+    protected void removeGPUImageView() {
         if (null != mGPUImageView) {
             mGPUImageView.onPause();
             mRlGPUImageViewCtn.removeView(mGPUImageView);

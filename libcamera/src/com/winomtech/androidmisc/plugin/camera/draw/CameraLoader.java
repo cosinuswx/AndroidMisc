@@ -17,7 +17,7 @@ import java.util.List;
  * @author kevinhuang
  * @since 2015-04-01
  */
-public class CameraLoader {
+public class CameraLoader implements ICameraLoader {
     final static String TAG = "CameraLoader";
 
     // 分辨率系数，选取摄像头预览和图片大小的时候，需要与预期值进行比例和差距加权求出差异值，然后取差异最小的
@@ -56,10 +56,6 @@ public class CameraLoader {
         mFrameRate = config.getFrameRate();
     }
 
-    /**
-     * 设置缩放比例，里面会按照当前的比例再去缩放
-     * @param factor 缩放比例
-     */
     public void setZoom(float factor) {
         if (null == mZoomRatios || null == mCamera) {
             return;
@@ -404,14 +400,6 @@ public class CameraLoader {
 
     public int getDisplayRotate() {
         return mDisplayRotate;
-    }
-
-    public int getPreviewWidth() {
-        return mPreviewSize.x;
-    }
-
-    public int getPreviewHeight() {
-        return mPreviewSize.y;
     }
 
     // 获取当前期望的帧率,设置给摄像头的有可能没生效,所以外围再做处理

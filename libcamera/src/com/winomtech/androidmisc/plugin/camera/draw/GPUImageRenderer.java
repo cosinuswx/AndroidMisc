@@ -55,18 +55,6 @@ import javax.microedition.khronos.opengles.GL10;
 public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback {
     private static final String TAG = "GPUImageRenderer";
 
-    /**
-     * 摄像头数据监听器
-     */
-    public interface OnPrevFrameListener {
-        /**
-         * 一帧数据的回复
-         *
-         * @param data YUV数据，上层不能保存该引用，如果需要保存，则自己复制一份
-         */
-        void onPrevFrame(byte[] data, int width, int height);
-    }
-
     @IntDef(value = {
             CMD_PROCESS_FRAME,
             CMD_SETUP_SURFACE_TEXTURE,
@@ -122,8 +110,6 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
     boolean mFlipHorizontal;
     boolean mFlipVertical;
     GPUImage.ScaleType mScaleType = GPUImage.ScaleType.CENTER_CROP;
-
-    OnPrevFrameListener mPrevFrameLsn;
 
     // 用来缓存当前摄像头的信息，这里假设了一个camera的实例的预览大小一旦设置了，就不会再变
     Camera mCacheCamera = null;
@@ -231,10 +217,6 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
     }
 
     public void uninit() {
-    }
-
-    public void setOnPrevFrameListener(OnPrevFrameListener listener) {
-        mPrevFrameLsn = listener;
     }
 
     @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
@@ -372,10 +354,6 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
             mCachePrevSize = new Point(previewSize.width, previewSize.height);
         }
 
-        if (null != mPrevFrameLsn) {
-            mPrevFrameLsn.onPrevFrame(data, mCachePrevSize.x, mCachePrevSize.y);
-        }
-
         if (mGLRgbBuffer == null || mGLRgbBuffer.capacity() != mCachePrevSize.x * mCachePrevSize.y * 4) {
             mGLRgbBuffer = ByteBuffer.allocate(mCachePrevSize.x * mCachePrevSize.y * 4);
         }
@@ -471,13 +449,6 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
         mGLCubeBuffer.put(cube).position(0);
         mGLTextureBuffer.clear();
         mGLTextureBuffer.put(textureCords).position(0);
-
-        float normalImageHeight = mImageHeight;
-        float normalImageWidth = mImageWidth;
-        if (mRotation == Rotation.ROTATION_270 || mRotation == Rotation.ROTATION_90) {
-            normalImageHeight = mImageWidth;
-            normalImageWidth = mImageHeight;
-        }
     }
 
     private float addDistance(float coordinate, float distance) {
@@ -539,14 +510,6 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, PreviewCallback
 
     public int getOutputHeight() {
         return mOutputHeight;
-    }
-
-    public int getImageWidth() {
-        return mImageWidth;
-    }
-
-    public int getImageHeight() {
-        return mImageHeight;
     }
 
     public void destroyFilters() {

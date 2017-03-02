@@ -12,10 +12,12 @@ import com.winom.olog.Log;
 import com.winomtech.androidmisc.plugin.camera.R;
 import com.winomtech.androidmisc.plugin.camera.camera.CameraConfig;
 import com.winomtech.androidmisc.plugin.camera.camera.CameraV1Loader;
+import com.winomtech.androidmisc.plugin.camera.camera.CameraV2Loader;
 import com.winomtech.androidmisc.plugin.camera.camera.ICameraLoader;
 import com.winomtech.androidmisc.plugin.camera.draw.GPUImageView;
 import com.winomtech.androidmisc.plugin.camera.draw.OnSurfaceListener;
 import com.winomtech.androidmisc.plugin.camera.filter.BlackWhiteFilter;
+import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroup;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;
 
@@ -70,7 +72,7 @@ public class CameraFragment extends Fragment {
             Log.i(TAG, "init camera");
 
             CameraConfig exceptConfig = CameraConfig.FullScreen;
-            mCameraLoader = new CameraV1Loader(getActivity(), true, exceptConfig);
+            mCameraLoader = new CameraV2Loader(getActivity(), true, exceptConfig);
             boolean ret = mCameraLoader.initCameraInGLThread();
 
             if (false == ret) {
@@ -84,7 +86,7 @@ public class CameraFragment extends Fragment {
                     mCameraLoader.getDisplayRotate(), mCameraLoader.isUseFrontFace(), false);
 
             GPUImageFilterGroupBase filterGroup = new GPUImageFilterGroup();
-            filterGroup.addFilter(new BlackWhiteFilter());
+            filterGroup.addFilter(new GPUImageFilter());
             mGPUImageView.setFilter(filterGroup);
         }
 

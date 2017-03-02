@@ -7,11 +7,6 @@ import com.winomtech.androidmisc.common.utils.Size;
  * @since 2017-03-02
  */
 public interface ICameraLoader {
-    /**
-     * 设置缩放比例，里面会按照当前的比例再去缩放
-     * @param factor 缩放比例
-     */
-    void setZoom(float factor);
 
     /**
      * 初始化摄像头
@@ -42,6 +37,12 @@ public interface ICameraLoader {
      * @param open 为true则为打开闪光灯，为false则为关闭闪光灯
      */
     void switchLight(boolean open);
+
+    /**
+     * 设置缩放比例，里面会按照当前的比例再去缩放
+     * @param factor 缩放比例
+     */
+    void setZoom(float factor);
 
     /**
      * 关闭摄像头

@@ -39,9 +39,6 @@ import java.util.concurrent.TimeUnit;
 public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailableListener {
     private static final String TAG = "CameraV2Loader";
 
-    // 分辨率系数，选取摄像头预览和图片大小的时候，需要与预期值进行比例和差距加权求出差异值，然后取差异最小的
-    private final static double COEFFICIENT = 1000.0d;
-
     private Activity mActivity;
     private boolean mUseFrontFace;
     private int mMaxWidth;
@@ -54,6 +51,9 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
     private CaptureRequest.Builder mPreviewRequestBuilder;
     private CameraCaptureSession mCaptureSession;
     private CaptureRequest mPreviewRequest;
+
+    private boolean mFlashSupported;
+    private int mFlashMode = MODE_MANUAL;
 
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
@@ -93,12 +93,38 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
 
     @Override
     public void switchAutoFlash(boolean open) {
+        if (!mFlashSupported || null == mCameraDevice) {
+            return;
+        }
 
+        // Flash is automatically enabled when necessary.
+        mFlashMode = open ? MODE_AUTO : MODE_MANUAL;
+        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_MODE,
+                open ? CaptureRequest.CONTROL_MODE_AUTO : CaptureRequest.CONTROL_MODE_OFF);
     }
 
     @Override
     public void switchLight(boolean open) {
+        if (!mFlashSupported || null == mCameraDevice) {
+            return;
+        }
 
+        if (open) {
+            mPreviewRequestBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
+        } else {
+            if (MODE_AUTO == mFlashMode) {
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO);
+            } else {
+                mPreviewRequestBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF);
+            }
+        }
+
+        mPreviewRequest = mPreviewRequestBuilder.build();
+        try {
+            mCaptureSession.setRepeatingRequest(mPreviewRequest, null, mBackgroundHandler);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -160,6 +186,10 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
                 mImageReader = ImageReader.newInstance(mPreviewSize.width, mPreviewSize.height, ImageFormat.YUV_420_888, 2);
                 mImageReader.setOnImageAvailableListener(this, mBackgroundHandler);
 
+                // Check if the flash is supported.
+                Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+                mFlashSupported = available == null ? false : available;
+
                 chooseCameraId = cameraId;
                 break;
             }
@@ -220,6 +250,8 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             }
 
             mCaptureSession = session;
+            // Auto focus should be continuous for camera preview.
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             // Finally, we start displaying the camera preview.
             mPreviewRequest = mPreviewRequestBuilder.build();
             try {

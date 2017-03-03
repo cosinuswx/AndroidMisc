@@ -7,6 +7,13 @@ import com.winomtech.androidmisc.common.utils.Size;
  * @since 2017-03-02
  */
 public interface ICameraLoader {
+    // 分辨率系数，选取摄像头预览和图片大小的时候，需要与预期值进行比例和差距加权求出差异值，然后取差异最小的
+    double COEFFICIENT = 1000.0d;
+
+    // 闪光灯的模式定义
+    int MODE_AUTO   = 1;    // 闪关灯自动
+    int MODE_MANUAL = 2;    // 对焦的时候，手动打开闪关灯
+
 
     /**
      * 初始化摄像头

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.winom.olog.Log;
@@ -30,6 +31,7 @@ public class CameraFragment extends Fragment {
 
     private ViewGroup mRootView;
     private RelativeLayout mRlGPUImageViewCtn;
+    private Button mBtnLight;
 
     private GPUImageView mGPUImageView;
     private ICameraLoader mCameraLoader;
@@ -39,6 +41,10 @@ public class CameraFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = (ViewGroup) inflater.inflate(R.layout.layout_camera_fragment, container, false);
         mRlGPUImageViewCtn = (RelativeLayout) mRootView.findViewById(R.id.rl_activity_gpuimage_container);
+
+        mBtnLight = (Button) mRootView.findViewById(R.id.btn_light);
+        mBtnLight.setOnClickListener(mLightListener);
+
         return mRootView;
     }
 
@@ -65,6 +71,19 @@ public class CameraFragment extends Fragment {
                 ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
+    View.OnClickListener mLightListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            boolean lightOn = (null != v.getTag()) && ((boolean) v.getTag());
+            lightOn = !lightOn;
+            if (null != mCameraLoader) {
+                mCameraLoader.switchLight(lightOn);
+                v.setTag(lightOn);
+            }
+        }
+    };
+
     OnSurfaceListener mSurfaceListener = new OnSurfaceListener() {
 
         @Override
@@ -72,7 +91,7 @@ public class CameraFragment extends Fragment {
             Log.i(TAG, "init camera");
 
             CameraConfig exceptConfig = CameraConfig.FullScreen;
-            mCameraLoader = new CameraV2Loader(getActivity(), true, exceptConfig);
+            mCameraLoader = new CameraV2Loader(getActivity(), false, exceptConfig);
             boolean ret = mCameraLoader.initCameraInGLThread();
 
             if (false == ret) {

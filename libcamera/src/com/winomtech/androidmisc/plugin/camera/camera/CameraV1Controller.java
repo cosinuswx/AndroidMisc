@@ -1,14 +1,19 @@
 package com.winomtech.androidmisc.plugin.camera.camera;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Build;
+import android.view.MotionEvent;
 import android.view.Surface;
 
 import com.winom.olog.Log;
+import com.winomtech.androidmisc.common.thread.ThreadPool;
 import com.winomtech.androidmisc.common.utils.ApiLevel;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -18,15 +23,7 @@ import java.util.List;
  * @since 2015-04-01
  */
 public class CameraV1Controller {
-    final static String TAG = "CameraLoader";
-
-    // 分辨率系数，选取摄像头预览和图片大小的时候，需要与预期值进行比例和差距加权求出差异值，然后取差异最小的
-    final static double COEFFICIENT = 1000.0d;
-
-    // 闪光灯的模式定义
-    final static int MODE_OFF		= 0;	// 关闭闪光灯
-    final static int MODE_AUTO		= 1;	// 闪关灯自动
-    final static int MODE_MANUAL	= 2;	// 对焦的时候，手动打开闪关灯
+    final static String TAG = "CameraV1Controller";
 
     Camera mCamera;
 
@@ -39,7 +36,7 @@ public class CameraV1Controller {
     boolean mUseFrontFace;        // 当前是否是使用前置摄像头
     Point mPreviewSize;
 
-    int mFlashMode = MODE_OFF;
+    int mFlashMode = ICameraLoader.MODE_MANUAL;
 
     int mDisplayRotate;
     int mMaxWidth;
@@ -80,6 +77,99 @@ public class CameraV1Controller {
         } catch (Exception e) {
             Log.e(TAG, "setZoom failed, " + e.getMessage());
         }
+    }
+
+    /**
+     * 触发自动对焦
+     *
+     * @param event 点击的位置
+     */
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public void focusOnTouch(final MotionEvent event, final int viewWidth, final int viewHeight) {
+        ThreadPool.post(new Runnable() {
+            @Override
+            public void run() {
+                focusOnWorkerThread(event, viewWidth, viewHeight);
+            }
+        }, "autofocus");
+    }
+
+    void focusOnWorkerThread(final MotionEvent event, final int viewWidth, final int viewHeight) {
+        if (null == mCamera) {
+            Log.e(TAG, "camera not initialized");
+            return;
+        }
+
+        if (false == mFocusEnd) {
+            Log.d(TAG, "autofocusing...");
+            return;
+        }
+
+        if (ApiLevel.getApiLevel() < ApiLevel.API14_ICE_CREAM_SANDWICH_40) {
+            Log.e(TAG, "api level below 14, can't use foucs area");
+            return;
+        }
+
+        Rect focusRect = calculateTapArea(event.getRawX(), event.getRawY(), viewWidth, viewHeight, 1f);
+        Rect meteringRect = calculateTapArea(event.getRawX(), event.getRawY(), viewWidth, viewHeight, 1.5f);
+
+        Camera.Parameters parameters = mCamera.getParameters();
+        List<String> modes = parameters.getSupportedFocusModes();
+        if (!modes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+            Log.e(TAG, "camera don't support auto focus");
+            return;
+        }
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+
+        if (parameters.getMaxNumFocusAreas() > 0) {
+            List<Camera.Area> focusAreas = new ArrayList<Camera.Area>();
+            focusAreas.add(new Camera.Area(focusRect, 1000));
+            parameters.setFocusAreas(focusAreas);
+        }
+
+        if (parameters.getMaxNumMeteringAreas() > 0) {
+            List<Camera.Area> meteringAreas = new ArrayList<Camera.Area>();
+            meteringAreas.add(new Camera.Area(meteringRect, 1000));
+
+            parameters.setMeteringAreas(meteringAreas);
+        }
+
+        if (ICameraLoader.MODE_MANUAL == mFlashMode) {
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+        }
+
+        try {
+            mCamera.setParameters(parameters);
+            mCamera.autoFocus(mAutoFocusCallback);
+            Log.i(TAG, "start autoFocus");
+        } catch (Exception e) {
+            Log.e(TAG, "autofocus failed, " + e.getMessage());
+            mFocusEnd = true;
+        }
+    }
+
+    /**
+     * Convert touch position x:y to {@link Camera.Area} position -1000:-1000 to 1000:1000.
+     */
+    Rect calculateTapArea(float x, float y, int viewWidth, int viewHeight, float coefficient) {
+        float focusAreaSize = 300;
+        int areaSize = Float.valueOf(focusAreaSize * coefficient).intValue();
+
+        int centerX = (int) (x / viewWidth * 2000 - 1000);
+        int centerY = (int) (y / viewHeight * 2000 - 1000);
+
+        int left = clamp(centerX - areaSize / 2, -1000, 1000);
+        int right = clamp(left + areaSize, -1000, 1000);
+        int top = clamp(centerY - areaSize / 2, -1000, 1000);
+        int bottom = clamp(top + areaSize, -1000, 1000);
+
+        return new Rect(left, top, right, bottom);
+    }
+
+    int clamp(int x, int min, int max) {
+        if (x > max) return max;
+        if (x < min) return min;
+        return x;
     }
 
     int getNearestZoomIndex(int prefectVal) {
@@ -225,7 +315,7 @@ public class CameraV1Controller {
     }
 
     int diff(double realH, double realW, double expH, double expW) {
-        double rateDiff = Math.abs(COEFFICIENT * (realH / realW - expH / expW));
+        double rateDiff = Math.abs(ICameraLoader.COEFFICIENT * (realH / realW - expH / expW));
         return (int) (rateDiff + Math.abs(realH - expH) + Math.abs(realW - expW));
     }
 
@@ -257,7 +347,7 @@ public class CameraV1Controller {
         public void onAutoFocus(boolean success, Camera camera) {
             mFocusEnd = true;
             if (success) {
-                if (MODE_MANUAL == mFlashMode) {
+                if (ICameraLoader.MODE_MANUAL == mFlashMode) {
                     switchLight(false);
                 }
             }
@@ -291,13 +381,13 @@ public class CameraV1Controller {
                 if (Build.VERSION.SDK_INT < ApiLevel.API21_KLOLLIPOP &&
                         params.getSupportedFlashModes().contains(Camera.Parameters.FLASH_MODE_AUTO)) {
                     params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
-                    mFlashMode = MODE_AUTO;
+                    mFlashMode = ICameraLoader.MODE_AUTO;
                 } else {
-                    mFlashMode = MODE_MANUAL;
+                    mFlashMode = ICameraLoader.MODE_MANUAL;
                 }
             } else {
                 params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                mFlashMode = MODE_OFF;
+                mFlashMode = ICameraLoader.MODE_MANUAL;
             }
             Log.d(TAG, "flash mode: " + params.getFlashMode());
             mCamera.setParameters(params);
@@ -316,7 +406,7 @@ public class CameraV1Controller {
             if (open) {
                 params.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
             } else {
-                params.setFlashMode(MODE_MANUAL == mFlashMode ? Camera.Parameters.FLASH_MODE_OFF :
+                params.setFlashMode(ICameraLoader.MODE_MANUAL == mFlashMode ? Camera.Parameters.FLASH_MODE_OFF :
                         Camera.Parameters.FLASH_MODE_AUTO);
             }
             mCamera.setParameters(params);

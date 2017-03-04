@@ -66,6 +66,10 @@ public class GPUImageView extends FrameLayout {
         mScaleGestureDector = new ScaleGestureDetector(context, mScaleGestureLsn);
     }
 
+    public void setOnGestureListener(OnGestureListener listener) {
+        mOuterGestureLsn = listener;
+    }
+
     public void runOnGLThread(Runnable runnable) {
         if(null != mGLSurfaceView) {
             mGLSurfaceView.queueEvent(runnable);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.opengl.GLES20;
+import android.view.MotionEvent;
 
 import com.winom.olog.Log;
 import com.winomtech.androidmisc.common.utils.Size;
@@ -113,6 +114,11 @@ public class CameraV1Loader implements ICameraLoader, Camera.PreviewCallback {
     @Override
     public void setZoom(float factor) {
         mCameraController.setZoom(factor);
+    }
+
+    @Override
+    public void focusOnTouch(MotionEvent event, int viewWidth, int viewHeight) {
+        mCameraController.focusOnTouch(event, viewWidth, viewHeight);
     }
 
     @Override

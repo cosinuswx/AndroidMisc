@@ -4,18 +4,25 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.CaptureResult;
+import android.hardware.camera2.TotalCaptureResult;
+import android.hardware.camera2.params.MeteringRectangle;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.view.MotionEvent;
 import android.view.Surface;
 
 import com.winom.olog.Log;
@@ -53,7 +60,8 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
     private CaptureRequest mPreviewRequest;
 
     private boolean mFlashSupported;
-    private int mFlashMode = MODE_MANUAL;
+    private int mFlashMode = MODE_OFF;
+    private Rect mActiveArraySize = new Rect(0, 0, 1, 1);
 
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
@@ -98,7 +106,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
         }
 
         // Flash is automatically enabled when necessary.
-        mFlashMode = open ? MODE_AUTO : MODE_MANUAL;
+        mFlashMode = open ? MODE_AUTO : MODE_OFF;
         mPreviewRequestBuilder.set(CaptureRequest.CONTROL_MODE,
                 open ? CaptureRequest.CONTROL_MODE_AUTO : CaptureRequest.CONTROL_MODE_OFF);
     }
@@ -129,6 +137,78 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
 
     @Override
     public void setZoom(float factor) {
+    }
+
+    @SuppressWarnings("SuspiciousNameCombination")
+    @Override
+    public void focusOnTouch(MotionEvent event, int viewWidth, int viewHeight) {
+        if (null == mCameraDevice || null == mCaptureSession) {
+            return;
+        }
+
+        // 先取相对于view上面的坐标
+        double x = event.getX(), y = event.getY(), tmp;
+
+        int realPreviewWidth = mPreviewSize.width, realPreviewHeight = mPreviewSize.height;
+        if (90 == mDisplayRotate || 270 == mDisplayRotate) {
+            realPreviewWidth = mPreviewSize.height;
+            realPreviewHeight = mPreviewSize.width;
+        }
+        
+        // 计算摄像头取出的图像相对于view放大了多少，以及有多少偏移
+        double imgScale = 1.0, verticalOffset = 0, horizontalOffset = 0;
+        if (realPreviewHeight * viewWidth > realPreviewWidth * viewHeight) {
+            imgScale = viewWidth * 1.0 / realPreviewWidth;
+            verticalOffset = (realPreviewHeight - viewHeight / imgScale) / 2;
+        } else {
+            imgScale = viewHeight * 1.0 / realPreviewHeight;
+            horizontalOffset = (realPreviewWidth - viewWidth / imgScale) / 2;
+        }
+
+        // 将点击的坐标转换为图像上的坐标
+        x = x / imgScale + horizontalOffset;
+        y = y / imgScale + verticalOffset;
+        if (90 == mDisplayRotate) {
+            tmp = x; x = y; y = mPreviewSize.height - tmp;
+        } else if (270 == mDisplayRotate) {
+            tmp = x; x = mPreviewSize.width - y; y = tmp;
+        }
+
+        // 计算取到的图像相对于传感器的缩放系数，以及位移
+        int sensorWidth = mActiveArraySize.width(), sensorHeight = mActiveArraySize.height();
+        if (mPreviewSize.height * sensorWidth > mPreviewSize.width * sensorHeight) {
+            imgScale = sensorHeight * 1.0 / mPreviewSize.height;
+            verticalOffset = 0;
+            horizontalOffset = (sensorWidth - imgScale * mPreviewSize.width) / 2;
+        } else {
+            imgScale = sensorWidth * 1.0 / mPreviewSize.width;
+            horizontalOffset = 0;
+            verticalOffset = (sensorHeight - imgScale * mPreviewSize.height) / 2;
+        }
+ 
+        // 将点击区域相对于图像的坐标，转化为相对于传感器的坐标
+        x = x * imgScale + horizontalOffset + mActiveArraySize.left;
+        y = y * imgScale + verticalOffset + mActiveArraySize.top;
+
+        double tapAreaRatio = 0.1;
+        Rect rect = new Rect();
+        rect.left = clamp((int) (x - tapAreaRatio / 2 * mActiveArraySize.width()), 0, mActiveArraySize.width());
+        rect.right = clamp((int) (x + tapAreaRatio / 2 * mActiveArraySize.width()), 0, mActiveArraySize.width());
+        rect.top = clamp((int) (y - tapAreaRatio / 2 * mActiveArraySize.height()), 0, mActiveArraySize.height());
+        rect.bottom = clamp((int) (y + tapAreaRatio / 2 * mActiveArraySize.height()), 0, mActiveArraySize.height());
+
+        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, new MeteringRectangle[] {new MeteringRectangle(rect, 1000)});
+        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS, new MeteringRectangle[] {new MeteringRectangle(rect, 1000)});
+        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
+        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
+        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER, CameraMetadata.CONTROL_AE_PRECAPTURE_TRIGGER_START);
+
+        mPreviewRequest = mPreviewRequestBuilder.build();
+        try {
+            mCaptureSession.setRepeatingRequest(mPreviewRequest, mAfCaptureCallback, mBackgroundHandler);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -162,6 +242,46 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
         return mPreviewSize;
     }
 
+    private int clamp(int x, int min, int max) {
+        if (x > max) return max;
+        if (x < min) return min;
+        return x;
+    }
+
+    private CameraCaptureSession.CaptureCallback mAfCaptureCallback = new CameraCaptureSession.CaptureCallback() {
+        private void process(CaptureResult result) {
+            Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
+            if (null == afState) {
+                return;
+            }
+
+            if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
+                    CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState) {
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
+                mPreviewRequest = mPreviewRequestBuilder.build();
+                try {
+                    mCaptureSession.setRepeatingRequest(mPreviewRequest, null, mBackgroundHandler);
+                } catch (CameraAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        public void onCaptureProgressed(@NonNull CameraCaptureSession session,
+                                        @NonNull CaptureRequest request,
+                                        @NonNull CaptureResult partialResult) {
+            process(partialResult);
+        }
+
+        @Override
+        public void onCaptureCompleted(@NonNull CameraCaptureSession session,
+                                       @NonNull CaptureRequest request,
+                                       @NonNull TotalCaptureResult result) {
+            process(result);
+        }
+    };
+
     private boolean openCamera() {
         CameraManager manager = (CameraManager) mActivity.getSystemService(Context.CAMERA_SERVICE);
         try {
@@ -190,6 +310,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
                 Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
                 mFlashSupported = available == null ? false : available;
 
+                mActiveArraySize = characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
                 chooseCameraId = cameraId;
                 break;
             }

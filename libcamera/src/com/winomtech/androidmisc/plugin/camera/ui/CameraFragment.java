@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,7 +27,7 @@ import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;
  * @author kevinhuang
  * @since 2017-03-02
  */
-public class CameraFragment extends Fragment {
+public class CameraFragment extends Fragment implements GPUImageView.OnGestureListener {
     private static final String TAG = "CameraFragment";
 
     private ViewGroup mRootView;
@@ -67,6 +68,7 @@ public class CameraFragment extends Fragment {
 
         // GPUImage是先做的翻转，再做的旋转
         mGPUImageView = new GPUImageView(getActivity(), mSurfaceListener);
+        mGPUImageView.setOnGestureListener(this);
         mRlGPUImageViewCtn.addView(mGPUImageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
     }
@@ -125,5 +127,35 @@ public class CameraFragment extends Fragment {
             mGPUImageView.uninit();
             mGPUImageView = null;
         }
+    }
+
+    @Override
+    public boolean onSingleTap(MotionEvent e) {
+        if (null == mGPUImageView) {
+            return false;
+        }
+
+        mCameraLoader.focusOnTouch(e, mGPUImageView.getWidth(), mGPUImageView.getHeight());
+        return true;
+    }
+
+    @Override
+    public void onDoubleTap() {
+    }
+
+    @Override
+    public void onScale(float factor) {
+    }
+
+    @Override
+    public void showPress() {
+    }
+
+    @Override
+    public void onLongPress() {
+    }
+
+    @Override
+    public void onActionUp() {
     }
 }

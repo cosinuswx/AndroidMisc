@@ -1,5 +1,7 @@
 package com.winomtech.androidmisc.plugin.camera.camera;
 
+import android.view.MotionEvent;
+
 import com.winomtech.androidmisc.common.utils.Size;
 
 /**
@@ -11,8 +13,9 @@ public interface ICameraLoader {
     double COEFFICIENT = 1000.0d;
 
     // 闪光灯的模式定义
+    int MODE_OFF    = 0;    // 关闭闪光灯
     int MODE_AUTO   = 1;    // 闪关灯自动
-    int MODE_MANUAL = 2;    // 对焦的时候，手动打开闪关灯
+    int MODE_MANUAL = 2;    // 对焦的时候，手动打开闪关灯，比如对焦的时候需要打开闪光灯
 
 
     /**
@@ -50,6 +53,14 @@ public interface ICameraLoader {
      * @param factor 缩放比例
      */
     void setZoom(float factor);
+
+    /**
+     * 在对应的位置触发自动对焦
+     * @param event 点击的事件
+     * @param viewWidth 事件对应的view的宽度
+     * @param viewHeight 事件对应的view的高度
+     */
+    void focusOnTouch(final MotionEvent event, final int viewWidth, final int viewHeight);
 
     /**
      * 关闭摄像头

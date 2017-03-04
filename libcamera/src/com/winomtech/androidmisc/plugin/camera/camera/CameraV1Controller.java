@@ -36,7 +36,7 @@ public class CameraV1Controller {
     boolean mUseFrontFace;        // 当前是否是使用前置摄像头
     Point mPreviewSize;
 
-    int mFlashMode = ICameraLoader.MODE_MANUAL;
+    int mFlashMode = ICameraLoader.MODE_OFF;
 
     int mDisplayRotate;
     int mMaxWidth;
@@ -79,12 +79,6 @@ public class CameraV1Controller {
         }
     }
 
-    /**
-     * 触发自动对焦
-     *
-     * @param event 点击的位置
-     */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void focusOnTouch(final MotionEvent event, final int viewWidth, final int viewHeight) {
         ThreadPool.post(new Runnable() {
             @Override
@@ -387,7 +381,7 @@ public class CameraV1Controller {
                 }
             } else {
                 params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                mFlashMode = ICameraLoader.MODE_MANUAL;
+                mFlashMode = ICameraLoader.MODE_OFF;
             }
             Log.d(TAG, "flash mode: " + params.getFlashMode());
             mCamera.setParameters(params);

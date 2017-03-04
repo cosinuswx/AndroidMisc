@@ -258,12 +258,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
                     CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState) {
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
-                mPreviewRequest = mPreviewRequestBuilder.build();
-                try {
-                    mCaptureSession.setRepeatingRequest(mPreviewRequest, null, mBackgroundHandler);
-                } catch (CameraAccessException e) {
-                    e.printStackTrace();
-                }
+                startNormalPreview();
             }
         }
 
@@ -337,6 +332,19 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
         return true;
     }
 
+    private void startNormalPreview() {
+        // Auto focus should be continuous for camera preview.
+        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_VIDEO);
+        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
+
+        mPreviewRequest = mPreviewRequestBuilder.build();
+        try {
+            mCaptureSession.setRepeatingRequest(mPreviewRequest, null, mBackgroundHandler);
+        } catch (CameraAccessException e) {
+            Log.e(TAG, "setRepeatingRequest failed, errMsg: " + e.getMessage());
+        }
+    }
+ 
     private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
 
         @Override
@@ -371,15 +379,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             }
 
             mCaptureSession = session;
-            // Auto focus should be continuous for camera preview.
-            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-            // Finally, we start displaying the camera preview.
-            mPreviewRequest = mPreviewRequestBuilder.build();
-            try {
-                mCaptureSession.setRepeatingRequest(mPreviewRequest, null, mBackgroundHandler);
-            } catch (CameraAccessException e) {
-                e.printStackTrace();
-            }
+            startNormalPreview();
         }
 
         @Override

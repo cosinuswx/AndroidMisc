@@ -27,6 +27,7 @@ import android.os.SystemClock;
 import android.support.annotation.IntDef;
 
 import com.winom.olog.Log;
+import com.winomtech.androidmisc.common.utils.FrameRateCollecter;
 import com.winomtech.androidmisc.common.utils.ObjectCacher;
 import com.winomtech.androidmisc.common.utils.Size;
 import com.winomtech.androidmisc.plugin.camera.SubcoreCamera;
@@ -125,6 +126,8 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
     int mCameraFrameRate = 30;      // 录制的时候,不好改变摄像头的帧率,所以需要在收到数据的时候丢帧
     long mFirstFrameTick = -1;
     long mFrameCount = 0;
+
+    FrameRateCollecter mFrameRateCollecter;
 
     ObjectCacher<CmdItem> mCmdItemCacher = new ObjectCacher<CmdItem>(20) {
         @Override
@@ -233,6 +236,10 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
 
         mFilter.draw(mGLTextureId, OpenGlUtils.NO_TEXTURE, mGLCubeBuffer, mGLTextureBuffer);
         runAll(mRunOnDrawEnd);
+        if (null == mFrameRateCollecter) {
+            mFrameRateCollecter = new FrameRateCollecter("render");
+        }
+        mFrameRateCollecter.onFrameAvailable();
     }
 
     public void uninit() {

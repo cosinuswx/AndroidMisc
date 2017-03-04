@@ -13,7 +13,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.winomtech.androidmisc.R;
-import com.winomtech.androidmisc.plugin.camera.ui.CameraFragment;
+import com.winomtech.androidmisc.plugin.camera.ui.CameraFragmentBase;
+import com.winomtech.androidmisc.plugin.camera.ui.CameraFragmentV1;
+import com.winomtech.androidmisc.plugin.camera.ui.CameraFragmentV2;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -46,7 +48,8 @@ public class LauncherFragment extends Fragment {
 		sEntryInfoList.add(new EntryInfo(R.string.entry_svg_drawable, SVGDrawableFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_render_script_exp, RenderScriptFragment.class));
         sEntryInfoList.add(new EntryInfo(R.string.entry_glide_custom_format, GlideCustomFormatFragment.class));
-        sEntryInfoList.add(new EntryInfo(R.string.entry_gpuimage, CameraFragment.class));
+        sEntryInfoList.add(new EntryInfo(R.string.entry_gpuimage_use_old_camera, CameraFragmentV1.class));
+        sEntryInfoList.add(new EntryInfo(R.string.entry_gpuimage_use_camera2, CameraFragmentV2.class));
 	}
 
 	@Override

@@ -27,7 +27,7 @@ import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;
  * @author kevinhuang
  * @since 2017-03-02
  */
-public class CameraFragment extends Fragment implements GPUImageView.OnGestureListener {
+public abstract class CameraFragmentBase extends Fragment implements GPUImageView.OnGestureListener {
     private static final String TAG = "CameraFragment";
 
     private ViewGroup mRootView;
@@ -61,6 +61,8 @@ public class CameraFragment extends Fragment implements GPUImageView.OnGestureLi
         removeGPUImageView();
     }
 
+    protected abstract boolean useCameraV2();
+
     private void initGPUImageView() {
         if (null != mGPUImageView) {
             return;
@@ -93,7 +95,11 @@ public class CameraFragment extends Fragment implements GPUImageView.OnGestureLi
             Log.i(TAG, "init camera");
 
             CameraConfig exceptConfig = CameraConfig.FullScreen;
-            mCameraLoader = new CameraV2Loader(getActivity(), false, exceptConfig);
+            if (useCameraV2()) {
+                mCameraLoader = new CameraV2Loader(getActivity(), false, exceptConfig);
+            } else {
+                mCameraLoader = new CameraV1Loader(getActivity(), false, exceptConfig);
+            }
             boolean ret = mCameraLoader.initCameraInGLThread();
 
             if (false == ret) {

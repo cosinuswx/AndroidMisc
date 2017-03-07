@@ -12,6 +12,7 @@ import android.view.Surface;
 import com.winom.olog.Log;
 import com.winomtech.androidmisc.common.thread.ThreadPool;
 import com.winomtech.androidmisc.common.utils.ApiLevel;
+import com.winomtech.androidmisc.plugin.camera.utils.Rotation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,8 +105,8 @@ public class CameraV1Controller {
             return;
         }
 
-        Rect focusRect = calculateTapArea(event.getRawX(), event.getRawY(), viewWidth, viewHeight, 1f);
-        Rect meteringRect = calculateTapArea(event.getRawX(), event.getRawY(), viewWidth, viewHeight, 1.5f);
+        Rect focusRect = calculateTapArea(event.getRawX(), event.getRawY(), mDisplayRotate, viewWidth, viewHeight, 1f);
+        Rect meteringRect = calculateTapArea(event.getRawX(), event.getRawY(), mDisplayRotate, viewWidth, viewHeight, 1.5f);
 
         Camera.Parameters parameters = mCamera.getParameters();
         List<String> modes = parameters.getSupportedFocusModes();
@@ -145,12 +146,22 @@ public class CameraV1Controller {
     /**
      * Convert touch position x:y to {@link Camera.Area} position -1000:-1000 to 1000:1000.
      */
-    Rect calculateTapArea(float x, float y, int viewWidth, int viewHeight, float coefficient) {
+    @SuppressWarnings("SuspiciousNameCombination")
+    Rect calculateTapArea(float x, float y, int rotation, int viewWidth, int viewHeight, float coefficient) {
         float focusAreaSize = 300;
         int areaSize = Float.valueOf(focusAreaSize * coefficient).intValue();
 
-        int centerX = (int) (x / viewWidth * 2000 - 1000);
-        int centerY = (int) (y / viewHeight * 2000 - 1000);
+        int tempX = (int) (x / viewWidth * 2000 - 1000);
+        int tempY = (int) (y / viewHeight * 2000 - 1000);
+
+        int centerX = 0, centerY = 0;
+        if (90 == rotation) {
+            centerX = tempY;
+            centerY = (2000 - (tempX + 1000) - 1000);
+        } else if (270 == rotation) {
+            centerX = (2000 - (tempY + 1000)) - 1000;
+            centerY = tempX;
+        }
 
         int left = clamp(centerX - areaSize / 2, -1000, 1000);
         int right = clamp(left + areaSize, -1000, 1000);

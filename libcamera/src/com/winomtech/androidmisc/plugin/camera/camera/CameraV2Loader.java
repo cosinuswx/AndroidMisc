@@ -21,6 +21,7 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -495,7 +496,8 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             android.util.Size it = sizeLst.get(sizeLst.size() / 2);
             choosedSize = new Size(it.getWidth(), it.getHeight());
         }
-        
+
+        Log.i(TAG, "setPreviewSize width: %d, height: %d", choosedSize.width, choosedSize.height);
         return choosedSize;
     }
 
@@ -522,8 +524,16 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
         }
 
         int area = mPreviewSize.width * mPreviewSize.height;
-        JniEntry.CopyData(planes[0].getBuffer(), 0, mPreviewBuf, 0, area);
-        JniEntry.mixUV(mPreviewBuf, area, planes[2].getBuffer(), planes[1].getBuffer(), planes[1].getPixelStride(), area / 4);
+        if (planes[0].getRowStride() == mPreviewSize.width) {
+            JniEntry.CopyData(planes[0].getBuffer(), 0, mPreviewBuf, 0, area);
+        } else {
+            JniEntry.CopyImage(planes[0].getBuffer(), 0, mPreviewBuf, 0,
+                    mPreviewSize.width, mPreviewSize.height,
+                    planes[0].getPixelStride(), planes[0].getRowStride());
+        }
+
+        JniEntry.mixUV(mPreviewBuf, area, planes[2].getBuffer(), planes[1].getBuffer(),
+                mPreviewSize.width, mPreviewSize.height, planes[1].getPixelStride(), planes[0].getRowStride());
 
         image.close();
 

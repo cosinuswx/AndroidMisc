@@ -20,7 +20,7 @@ public class CameraV1Loader implements ICameraLoader, Camera.PreviewCallback {
 
     CameraV1Controller mCameraController;
     SurfaceTexture mSurfaceTexture = null;
-    ByteBuffer mPreviewBuf;
+    ByteBuffer[] mPreviewBufArr;
     Size mPreviewSize;
 
     CameraPreviewCallback mPreviewCallback;
@@ -60,10 +60,18 @@ public class CameraV1Loader implements ICameraLoader, Camera.PreviewCallback {
         Camera camera = mCameraController.getCamera();
         Camera.Size size = camera.getParameters().getPreviewSize();
         mPreviewSize = new Size(size.width, size.height);
-        mPreviewBuf = ByteBuffer.allocateDirect(size.width * size.height * 3 / 2);
+
+        mPreviewBufArr = new ByteBuffer[2];
+        byte[][] bufArr = new byte[mPreviewBufArr.length][];
+        for (int i = 0; i < mPreviewBufArr.length; ++i) {
+            mPreviewBufArr[i] = ByteBuffer.allocateDirect(size.width * size.height * 3 / 2);
+            bufArr[i] = mPreviewBufArr[i].array();
+        }
 
         try {
-            camera.addCallbackBuffer(mPreviewBuf.array());
+            for (int i = 0; i < bufArr.length; ++i) {
+                camera.addCallbackBuffer(bufArr[i]);
+            }
             camera.setPreviewTexture(mSurfaceTexture);
             camera.setPreviewCallbackWithBuffer(this);
             camera.startPreview();
@@ -87,7 +95,7 @@ public class CameraV1Loader implements ICameraLoader, Camera.PreviewCallback {
         mCameraController.releaseCamera();
         mSurfaceTexture.release();
         mSurfaceTexture = null;
-        mPreviewBuf = null;
+        mPreviewBufArr = null;
     }
 
     @Override

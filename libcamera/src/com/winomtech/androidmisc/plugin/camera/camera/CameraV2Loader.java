@@ -143,7 +143,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
     @SuppressWarnings("SuspiciousNameCombination")
     @Override
     public void focusOnTouch(MotionEvent event, int viewWidth, int viewHeight) {
-        if (null == mCameraDevice || null == mCaptureSession) {
+        if (null == mCameraDevice || null == mCaptureSession || null == mPreviewRequest) {
             return;
         }
 
@@ -155,7 +155,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             realPreviewWidth = mPreviewSize.height;
             realPreviewHeight = mPreviewSize.width;
         }
-        
+
         // 计算摄像头取出的图像相对于view放大了多少，以及有多少偏移
         double imgScale = 1.0, verticalOffset = 0, horizontalOffset = 0;
         if (realPreviewHeight * viewWidth > realPreviewWidth * viewHeight) {
@@ -175,28 +175,34 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             tmp = x; x = mPreviewSize.width - y; y = tmp;
         }
 
-        // 计算取到的图像相对于传感器的缩放系数，以及位移
-        int sensorWidth = mActiveArraySize.width(), sensorHeight = mActiveArraySize.height();
-        if (mPreviewSize.height * sensorWidth > mPreviewSize.width * sensorHeight) {
-            imgScale = sensorHeight * 1.0 / mPreviewSize.height;
-            verticalOffset = 0;
-            horizontalOffset = (sensorWidth - imgScale * mPreviewSize.width) / 2;
-        } else {
-            imgScale = sensorWidth * 1.0 / mPreviewSize.width;
-            horizontalOffset = 0;
-            verticalOffset = (sensorHeight - imgScale * mPreviewSize.height) / 2;
+        // 计算取到的图像相对于裁剪区域的缩放系数，以及位移
+        Rect cropRegion = mPreviewRequest.get(CaptureRequest.SCALER_CROP_REGION);
+        if (null == cropRegion) {
+            Log.e(TAG, "can't get crop region");
+            cropRegion = mActiveArraySize;
         }
- 
-        // 将点击区域相对于图像的坐标，转化为相对于传感器的坐标
-        x = x * imgScale + horizontalOffset + mActiveArraySize.left;
-        y = y * imgScale + verticalOffset + mActiveArraySize.top;
+
+        int cropWidth = cropRegion.width(), cropHeight = cropRegion.height();
+        if (mPreviewSize.height * cropWidth > mPreviewSize.width * cropHeight) {
+            imgScale = cropHeight * 1.0 / mPreviewSize.height;
+            verticalOffset = 0;
+            horizontalOffset = (cropWidth - imgScale * mPreviewSize.width) / 2;
+        } else {
+            imgScale = cropWidth * 1.0 / mPreviewSize.width;
+            horizontalOffset = 0;
+            verticalOffset = (cropHeight - imgScale * mPreviewSize.height) / 2;
+        }
+
+        // 将点击区域相对于图像的坐标，转化为相对于成像区域的坐标
+        x = x * imgScale + horizontalOffset + cropRegion.left;
+        y = y * imgScale + verticalOffset + cropRegion.top;
 
         double tapAreaRatio = 0.1;
         Rect rect = new Rect();
-        rect.left = clamp((int) (x - tapAreaRatio / 2 * mActiveArraySize.width()), 0, mActiveArraySize.width());
-        rect.right = clamp((int) (x + tapAreaRatio / 2 * mActiveArraySize.width()), 0, mActiveArraySize.width());
-        rect.top = clamp((int) (y - tapAreaRatio / 2 * mActiveArraySize.height()), 0, mActiveArraySize.height());
-        rect.bottom = clamp((int) (y + tapAreaRatio / 2 * mActiveArraySize.height()), 0, mActiveArraySize.height());
+        rect.left = clamp((int) (x - tapAreaRatio / 2 * cropRegion.width()), 0, cropRegion.width());
+        rect.right = clamp((int) (x + tapAreaRatio / 2 * cropRegion.width()), 0, cropRegion.width());
+        rect.top = clamp((int) (y - tapAreaRatio / 2 * cropRegion.height()), 0, cropRegion.height());
+        rect.bottom = clamp((int) (y + tapAreaRatio / 2 * cropRegion.height()), 0, cropRegion.height());
 
         mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, new MeteringRectangle[] {new MeteringRectangle(rect, 1000)});
         mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS, new MeteringRectangle[] {new MeteringRectangle(rect, 1000)});
@@ -208,7 +214,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
         try {
             mCaptureSession.setRepeatingRequest(mPreviewRequest, mAfCaptureCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            e.printStackTrace();
+            Log.e(TAG, "setRepeatingRequest failed, " + e.getMessage());
         }
     }
 
@@ -329,7 +335,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             Log.e(TAG, "open camera been interrupt, errMsg: " + e.getMessage());
             return false;
         }
-        
+
         return true;
     }
 
@@ -345,7 +351,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             Log.e(TAG, "setRepeatingRequest failed, errMsg: " + e.getMessage());
         }
     }
- 
+
     private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
 
         @Override

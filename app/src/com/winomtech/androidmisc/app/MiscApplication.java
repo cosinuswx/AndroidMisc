@@ -15,7 +15,7 @@ import com.winomtech.androidmisc.utils.BuildInfo;
  * @author kevinhuang
  * @since 2015-01-20
  */
-public class AmApplication extends Application {
+public class MiscApplication extends Application {
     private final static String TAG = "MMApplication";
     private final static String sourcePkgName = "com.winomtech.androidmisc";
 

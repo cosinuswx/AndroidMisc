@@ -246,39 +246,46 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
     }
 
     @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
-    void runAll(Queue<CmdItem> queue) {
-        synchronized (queue) {
-            while (!queue.isEmpty()) {
-                CmdItem cmdItem = queue.poll();
-
-                switch (cmdItem.cmdId) {
-                    case CMD_PROCESS_FRAME:
-                        processFrame((byte[]) cmdItem.param1, (ICameraLoader) cmdItem.param2);
-                        break;
-                    case CMD_SET_FILTER:
-                        setFilterInternal((GPUImageFilterGroupBase) cmdItem.param1);
-                        break;
-                    case CMD_DELETE_IMAGE:
-                        deleteImageInternal();
-                        break;
-                    case CMD_SET_IMAGE_BITMAP:
-                        setImageBitmapInternal((Bitmap) cmdItem.param1, (Boolean) cmdItem.param2);
-                        break;
-                    case CMD_RERUN_ONDRAW_RUNNABLE:
-                        ((Runnable) cmdItem.param1).run();
-                        break;
-                    case CMD_RERUN_DRAWEND_RUNNABLE:
-                        ((Runnable) cmdItem.param1).run();
-                        break;
-                    case CMD_RESET_RS_SIZE:
-                        resetRsSize((Integer) cmdItem.param1, (Integer) cmdItem.param2);
-                        break;
-                    default:
-                        throw new RuntimeException("can't find command");
+    private void runAll(Queue<CmdItem> queue) {
+        while (true) {
+            CmdItem cmdItem = null;
+            synchronized (queue) {
+                if (!queue.isEmpty()) {
+                    cmdItem = queue.poll();
                 }
-
-                mCmdItemCacher.cache(cmdItem);
             }
+
+            if (cmdItem == null) {
+                break;
+            }
+
+            switch (cmdItem.cmdId) {
+            case CMD_PROCESS_FRAME:
+                processFrame((byte[]) cmdItem.param1, (ICameraLoader) cmdItem.param2);
+                break;
+            case CMD_SET_FILTER:
+                setFilterInternal((GPUImageFilterGroupBase) cmdItem.param1);
+                break;
+            case CMD_DELETE_IMAGE:
+                deleteImageInternal();
+                break;
+            case CMD_SET_IMAGE_BITMAP:
+                setImageBitmapInternal((Bitmap) cmdItem.param1, (Boolean) cmdItem.param2);
+                break;
+            case CMD_RERUN_ONDRAW_RUNNABLE:
+                ((Runnable) cmdItem.param1).run();
+                break;
+            case CMD_RERUN_DRAWEND_RUNNABLE:
+                ((Runnable) cmdItem.param1).run();
+                break;
+            case CMD_RESET_RS_SIZE:
+                resetRsSize((Integer) cmdItem.param1, (Integer) cmdItem.param2);
+                break;
+            default:
+                throw new RuntimeException("can't find command");
+            }
+
+            mCmdItemCacher.cache(cmdItem);
         }
     }
 
@@ -343,7 +350,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
         // 如果还没到下一帧所要求的时间点,则丢弃这一帧
         if ((SystemClock.uptimeMillis() - mFirstFrameTick) < (mFrameCount + 1) * (1000 / mCameraFrameRate)) {
             cameraLoader.addCallbackBuffer(data);
-            Log.v(TAG, "too many frame from camera, drop it");
+            Log.v(TAG, "too many frames from camera, drop it");
             return;
         }
 

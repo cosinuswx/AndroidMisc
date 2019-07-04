@@ -102,7 +102,7 @@ public abstract class CameraFragmentBase extends Fragment implements GPUImageVie
             }
             boolean ret = mCameraLoader.initCameraInGLThread();
 
-            if (false == ret) {
+            if (!ret) {
                 Log.e(TAG, "initCameraInGLThread failed");
                 return;
             }

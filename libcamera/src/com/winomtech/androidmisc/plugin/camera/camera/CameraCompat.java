@@ -2,12 +2,12 @@ package com.winomtech.androidmisc.plugin.camera.camera;
 
 import android.hardware.Camera;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 
 import java.lang.reflect.Method;
 
 /**
- * @author kevinhuang 
+ * @author kevinhuang
  * @since 2015-03-24
  * 根据api返回的结果以及服务器的配置计算和保存最终的摄像头的结果，这种计算不像fps之类的，这种是通用的
  */
@@ -24,10 +24,10 @@ public class CameraCompat {
 		if (!force && null != gCameraInfo) {
 			return;
 		}
-		
+
 		gCameraInfo = new CameraInfo();
-		Log.i(TAG, "isSupportHiApi: " + checkSupportHiAPI());
-		
+		OLog.i(TAG, "isSupportHiApi: " + checkSupportHiAPI());
+
 		initCameraInfoFromApi();
 	}
 
@@ -55,14 +55,14 @@ public class CameraCompat {
 		try {
 			Method fcMethod = Class.forName("android.hardware.Camera").getDeclaredMethod("getNumberOfCameras", (Class[]) null);
 			if (fcMethod == null) {
-				Log.d(TAG, "GetfcMethod is null");
+				OLog.d(TAG, "GetfcMethod is null");
 				ret = false;
 			} else {
 				ret = true;
 			}
 		} catch (Exception e) {
 			ret = false;
-			Log.e(TAG, "find getNumberOfCameras failed: " + e.getMessage());
+			OLog.e(TAG, "find getNumberOfCameras failed: " + e.getMessage());
 		}
 		return ret;
 	}

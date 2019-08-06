@@ -23,9 +23,5 @@
 			</intent-filter>
 		</activity>
 
-        <meta-data
-            android:name="com.winomtech.androidmisc.encpic.AmGlideModule"
-            android:value="GlideModule" />
-
     </application>
 </manifest>

@@ -11,7 +11,6 @@
 	<string name="entry_pick_time">选择时间</string>
 	<string name="entry_svg_drawable">SVG图像测试</string>
 	<string name="entry_render_script_exp">RS测试</string>
-    <string name="entry_glide_custom_format">Glide自定义格式测试</string>
     <string name="entry_gpuimage_use_old_camera">GPUImage（Old Camera）</string>
     <string name="entry_gpuimage_use_camera2">GPUImage（Camera2）</string>
 

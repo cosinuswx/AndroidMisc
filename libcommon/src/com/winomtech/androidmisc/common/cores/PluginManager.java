@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.plugin.IPlugin;
 
 import java.util.HashMap;
@@ -27,18 +27,18 @@ public class PluginManager {
     }
 
     public static boolean loadPlugin(String pluginName) {
-        Log.d(TAG, "loadPlugin: " + pluginName);
+        OLog.d(TAG, "loadPlugin: " + pluginName);
         IPlugin plugin = null;
         try {
             ClassLoader clsLoader = sContext.getClass().getClassLoader();
             Class<?> clsPlugin = clsLoader.loadClass(sPackageName + ".plugin." + pluginName + ".Plugin");
             plugin = (IPlugin) clsPlugin.newInstance();
         } catch (ClassNotFoundException e) {
-            Log.e(TAG, "loadPlugin failed: " + e.getMessage());
+            OLog.e(TAG, "loadPlugin failed: " + e.getMessage());
         } catch (InstantiationException e) {
-            Log.e(TAG, "loadPlugin failed: " + e.getMessage());
+            OLog.e(TAG, "loadPlugin failed: " + e.getMessage());
         } catch (IllegalAccessException e) {
-            Log.e(TAG, "loadPlugin failed: " + e.getMessage());
+            OLog.e(TAG, "loadPlugin failed: " + e.getMessage());
         }
 
         if (null != plugin) {

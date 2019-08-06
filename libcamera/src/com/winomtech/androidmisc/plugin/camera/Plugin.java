@@ -1,6 +1,6 @@
 package com.winomtech.androidmisc.plugin.camera;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.plugin.IPlugin;
 
 /**
@@ -11,7 +11,7 @@ public class Plugin implements IPlugin {
 
     @Override
     public void init() {
-        Log.d("PluginManager", "camera plugin loaded");
+        OLog.d("PluginManager", "camera plugin loaded");
         SubcoreCamera.getCore();
     }
 }

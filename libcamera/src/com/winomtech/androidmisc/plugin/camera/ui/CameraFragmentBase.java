@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.plugin.camera.R;
 import com.winomtech.androidmisc.plugin.camera.camera.CameraConfig;
 import com.winomtech.androidmisc.plugin.camera.camera.CameraV1Loader;
@@ -92,7 +92,7 @@ public abstract class CameraFragmentBase extends Fragment implements GPUImageVie
 
         @Override
         public void onSurfaceCreated() {
-            Log.i(TAG, "init camera");
+            OLog.i(TAG, "init camera");
 
             CameraConfig exceptConfig = CameraConfig.FullScreen;
             if (useCameraV2()) {
@@ -103,10 +103,10 @@ public abstract class CameraFragmentBase extends Fragment implements GPUImageVie
             boolean ret = mCameraLoader.initCameraInGLThread();
 
             if (!ret) {
-                Log.e(TAG, "initCameraInGLThread failed");
+                OLog.e(TAG, "initCameraInGLThread failed");
                 return;
             }
-            Log.i(TAG, "initCameraInGLThread succeed");
+            OLog.i(TAG, "initCameraInGLThread succeed");
 
 
             mGPUImageView.getGPUImage().setUpCamera(mCameraLoader, mCameraLoader.getCameraFrameRate(),

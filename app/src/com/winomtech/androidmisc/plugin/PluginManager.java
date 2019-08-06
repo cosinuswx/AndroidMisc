@@ -1,6 +1,6 @@
 package com.winomtech.androidmisc.plugin;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.app.MiscApplication;
 import com.winomtech.androidmisc.common.plugin.IPlugin;
 
@@ -23,11 +23,11 @@ public class PluginManager {
 			Class<?> clsPlugin = clsLoader.loadClass(MiscApplication.getSourcePkgName() + ".plugin." + pluginName + ".Plugin");
 			plugin = (IPlugin) clsPlugin.newInstance();
 		} catch (ClassNotFoundException e) {
-			Log.e(TAG, "loadPlugin failed: " + e.getMessage());
+			OLog.e(TAG, "loadPlugin failed: " + e.getMessage());
 		} catch (InstantiationException e) {
-			Log.e(TAG, "loadPlugin failed: " + e.getMessage());
+			OLog.e(TAG, "loadPlugin failed: " + e.getMessage());
 		} catch (IllegalAccessException e) {
-			Log.e(TAG, "loadPlugin failed: " + e.getMessage());
+			OLog.e(TAG, "loadPlugin failed: " + e.getMessage());
 		}
 		
 		if (null != plugin) {

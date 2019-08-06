@@ -2,7 +2,7 @@ package com.winomtech.androidmisc.common.asynccomponent;
 
 import android.annotation.SuppressLint;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,12 +55,12 @@ public class TaskStateMachine {
 
 	public void tranform(int action) {
 		if (!haveRuleForAction(mState, action)) {
-			Log.e(TAG, "state: %d don't contain rule for action: %d", mState, action);
+			OLog.e(TAG, "state: %d don't contain rule for action: %d", mState, action);
 			return;
 		}
 
 		int newState = mTransRules.get(mState).get(action);
-		Log.d(TAG, "from oldState: %d to newState: %d, action: %d", mState, newState, action);
+		OLog.d(TAG, "from oldState: %d to newState: %d, action: %d", mState, newState, action);
 		mState = newState;
 	}
 

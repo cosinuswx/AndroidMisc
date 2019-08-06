@@ -2,7 +2,7 @@ package com.winomtech.androidmisc.plugin.camera;
 
 import android.renderscript.RenderScript;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.constants.Constants;
 import com.winomtech.androidmisc.common.cores.AmCore;
 import com.winomtech.androidmisc.common.cores.ISubCore;
@@ -33,10 +33,10 @@ public class SubcoreCamera implements ISubCore {
         try {
             mRenderScript = RenderScript.create(AmCore.getCore().getContext());
             mCanUseRs = true;
-            Log.i(TAG, "can use renderscript");
+            OLog.i(TAG, "can use renderscript");
         } catch (Exception e) {
             mCanUseRs = false;
-            Log.i(TAG, "can't use renderscript");
+            OLog.i(TAG, "can't use renderscript");
         }
 
         CameraCompat.initCameraInfo();

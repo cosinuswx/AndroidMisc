@@ -19,7 +19,7 @@ package com.winomtech.androidmisc.plugin.camera.filter;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.plugin.camera.utils.OpenGlUtils;
 
 import java.nio.FloatBuffer;
@@ -136,7 +136,7 @@ public class GPUImageFilter {
         onDestroy();
 
         if (OpenGlUtils.getContextHandle() != mContextHandle) {
-            Log.e(TAG, "destroy filter on diff context " + this);
+            OLog.e(TAG, "destroy filter on diff context " + this);
         }
     }
 

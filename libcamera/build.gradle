@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "24.0.2"
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 18
@@ -25,11 +25,15 @@ android {
             assets.srcDirs = ['assets']
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':libcommon')
-    compile project(':jni')
-    compile 'com.android.support:appcompat-v7:23.2.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':libcommon')
+    implementation project(':jni')
 }

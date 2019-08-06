@@ -3,8 +3,8 @@ package com.winomtech.androidmisc.app;
 import android.app.Application;
 import android.content.Context;
 
-import com.winom.olog.Log;
 import com.winom.olog.LogImpl;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.constants.Constants;
 import com.winomtech.androidmisc.common.cores.AmCore;
 import com.winomtech.androidmisc.common.utils.MiscUtils;
@@ -28,9 +28,9 @@ public class MiscApplication extends Application {
         MiscUtils.mkdirs(Constants.SDCARD_PATH);
         MiscUtils.mkdirs(Constants.LOG_SAVE_PATH);
 
-        Log.setLogImpl(new LogImpl(Constants.LOG_SAVE_PATH, "MM", ".olog"));
-        Log.setLogLevel(Log.LEVEL_VERBOSE);
-        Log.setLogToLogcat(true);
+        OLog.setLogImpl(new LogImpl(Constants.LOG_SAVE_PATH, "MM", ".olog"));
+        OLog.setLogLevel(OLog.LEVEL_VERBOSE);
+        OLog.setLogToLogcat(true);
 
         AmCore.initialize(this);
 
@@ -38,7 +38,7 @@ public class MiscApplication extends Application {
         PluginManager.loadPlugin(Constants.PLUGIN_JNI);
         PluginManager.loadPlugin(Constants.PLUGIN_CAMERA);
 
-        Log.i(TAG, BuildInfo.info());
+        OLog.i(TAG, BuildInfo.info());
     }
 
     public static String getSourcePkgName() {

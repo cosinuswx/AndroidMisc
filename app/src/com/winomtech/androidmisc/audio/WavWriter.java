@@ -2,7 +2,7 @@ package com.winomtech.androidmisc.audio;
 
 import android.media.AudioFormat;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
@@ -51,7 +51,7 @@ public class WavWriter {
 			mFileSize = 44;
 			mDataOutputStream.write(byteBuffer.array());
 		} catch (IOException e) {
-			Log.e(TAG, "create file failed: " + e.getMessage());
+			OLog.e(TAG, "create file failed: " + e.getMessage());
 		}
 	}
 
@@ -64,7 +64,7 @@ public class WavWriter {
 			mDataOutputStream.write(buf, 0, len);
 			mFileSize += len;
 		} catch (Exception e) {
-			Log.e(TAG, "write to file failed: " + e.getMessage());
+			OLog.e(TAG, "write to file failed: " + e.getMessage());
 			return false;
 		}
 		return true;
@@ -74,7 +74,7 @@ public class WavWriter {
 		try {
 			mDataOutputStream.close();
 		} catch (IOException e) {
-			Log.e(TAG, "close file failed: " + e.getMessage());
+			OLog.e(TAG, "close file failed: " + e.getMessage());
 		}
 
 		RandomAccessFile ras = null;

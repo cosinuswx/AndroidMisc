@@ -47,7 +47,6 @@ public class LauncherFragment extends Fragment {
 		sEntryInfoList.add(new EntryInfo(R.string.entry_pick_time, PickTimeFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_svg_drawable, SVGDrawableFragment.class));
 		sEntryInfoList.add(new EntryInfo(R.string.entry_render_script_exp, RenderScriptFragment.class));
-        sEntryInfoList.add(new EntryInfo(R.string.entry_glide_custom_format, GlideCustomFormatFragment.class));
         sEntryInfoList.add(new EntryInfo(R.string.entry_gpuimage_use_old_camera, CameraFragmentV1.class));
         sEntryInfoList.add(new EntryInfo(R.string.entry_gpuimage_use_camera2, CameraFragmentV2.class));
 	}

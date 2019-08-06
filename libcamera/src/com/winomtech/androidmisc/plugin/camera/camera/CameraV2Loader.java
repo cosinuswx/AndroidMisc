@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
-import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -21,12 +20,11 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.Surface;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.utils.ApiLevel;
 import com.winomtech.androidmisc.common.utils.Size;
 import com.winomtech.androidmisc.plugin.jni.JniEntry;
@@ -178,7 +176,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
         // 计算取到的图像相对于裁剪区域的缩放系数，以及位移
         Rect cropRegion = mPreviewRequest.get(CaptureRequest.SCALER_CROP_REGION);
         if (null == cropRegion) {
-            Log.e(TAG, "can't get crop region");
+            OLog.e(TAG, "can't get crop region");
             cropRegion = mActiveArraySize;
         }
 
@@ -214,7 +212,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
         try {
             mCaptureSession.setRepeatingRequest(mPreviewRequest, mAfCaptureCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            Log.e(TAG, "setRepeatingRequest failed, " + e.getMessage());
+            OLog.e(TAG, "setRepeatingRequest failed, " + e.getMessage());
         }
     }
 
@@ -326,13 +324,13 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             }
             manager.openCamera(chooseCameraId, mStateCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            Log.e(TAG, "open camera failed, errMsg: " + e.getMessage());
+            OLog.e(TAG, "open camera failed, errMsg: " + e.getMessage());
             return false;
         } catch (SecurityException e) {
-            Log.e(TAG, "SecurityException on openCamera, errMsg: " + e.getMessage());
+            OLog.e(TAG, "SecurityException on openCamera, errMsg: " + e.getMessage());
             return false;
         } catch (InterruptedException e) {
-            Log.e(TAG, "open camera been interrupt, errMsg: " + e.getMessage());
+            OLog.e(TAG, "open camera been interrupt, errMsg: " + e.getMessage());
             return false;
         }
 
@@ -348,7 +346,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
         try {
             mCaptureSession.setRepeatingRequest(mPreviewRequest, null, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            Log.e(TAG, "setRepeatingRequest failed, errMsg: " + e.getMessage());
+            OLog.e(TAG, "setRepeatingRequest failed, errMsg: " + e.getMessage());
         }
     }
 
@@ -370,7 +368,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
 
         @Override
         public void onError(@NonNull CameraDevice camera, int error) {
-            Log.e(TAG, "camera device error: " + error);
+            OLog.e(TAG, "camera device error: " + error);
             mCameraOpenCloseLock.release();
             camera.close();
             mCameraDevice = null;
@@ -391,7 +389,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
 
         @Override
         public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-            Log.e(TAG, "configure camera failed");
+            OLog.e(TAG, "configure camera failed");
         }
     };
 
@@ -404,7 +402,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             mPreviewRequestBuilder.addTarget(mImageReader.getSurface());
             mCameraDevice.createCaptureSession(Collections.singletonList(mImageReader.getSurface()), mCreateSessionCallback, null);
         } catch (CameraAccessException e) {
-            Log.e(TAG, "create camera preview failed, errMsg: " + e.getMessage());
+            OLog.e(TAG, "create camera preview failed, errMsg: " + e.getMessage());
         }
     }
 
@@ -457,13 +455,13 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
     private Size chooseBestPreviewSize(CameraCharacteristics characteristics) {
         StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
         if (map == null) {
-            Log.e(TAG, "can't get data from CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP");
+            OLog.e(TAG, "can't get data from CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP");
             return null;
         }
 
         android.util.Size[] sizes = map.getOutputSizes(ImageFormat.YUV_420_888);
         if (null == sizes || 0 == sizes.length) {
-            Log.e(TAG, "no output size for NV21");
+            OLog.e(TAG, "no output size for NV21");
             return null;
         }
 
@@ -479,10 +477,10 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
                 width = it.getHeight();
             }
 
-            Log.i(TAG, "supportPreview, width: %d, height: %d", width, height);
+            OLog.i(TAG, "supportPreview, width: %d, height: %d", width, height);
             if (width * height <= mMaxHeight * mMaxWidth) {
                 int newDiff = diff(height, width, mMaxHeight, mMaxWidth);
-                Log.d(TAG, "diff: " + newDiff);
+                OLog.d(TAG, "diff: " + newDiff);
                 if (null == choosedSize || newDiff < diff) {
                     choosedSize = new Size(it.getWidth(), it.getHeight());
                     diff = newDiff;
@@ -503,7 +501,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
             choosedSize = new Size(it.getWidth(), it.getHeight());
         }
 
-        Log.i(TAG, "setPreviewSize width: %d, height: %d", choosedSize.width, choosedSize.height);
+        OLog.i(TAG, "setPreviewSize width: %d, height: %d", choosedSize.width, choosedSize.height);
         return choosedSize;
     }
 

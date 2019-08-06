@@ -24,7 +24,7 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.view.ViewTreeObserver;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.plugin.camera.camera.ICameraLoader;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroup;
@@ -117,7 +117,7 @@ public class GPUImage {
                     width = mGlSurfaceView.getWidth() * height / mGlSurfaceView.getHeight();
                 }
 
-                Log.i(TAG, "setFixedSize width: %d, height: %d", width, height);
+                OLog.i(TAG, "setFixedSize width: %d, height: %d", width, height);
                 mGlSurfaceView.getHolder().setFixedSize(width, height);
             }
         }
@@ -146,7 +146,7 @@ public class GPUImage {
                             final boolean flipHorizontal,
                             final boolean flipVertical) {
         if (null == cameraLoader) {
-            Log.e(TAG, "setUpCamera failed, camera is null");
+            OLog.e(TAG, "setUpCamera failed, camera is null");
             return;
         }
 

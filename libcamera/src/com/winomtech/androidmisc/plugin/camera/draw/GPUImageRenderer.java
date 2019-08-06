@@ -26,7 +26,7 @@ import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 import android.support.annotation.IntDef;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.utils.FrameRateCollecter;
 import com.winomtech.androidmisc.common.utils.ObjectCacher;
 import com.winomtech.androidmisc.common.utils.Size;
@@ -174,7 +174,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
 
     @Override
     public void onSurfaceCreated(final GL10 unused, final EGLConfig config) {
-        Log.d(TAG, "onSurfaceCreated config: " + config.toString());
+        OLog.d(TAG, "onSurfaceCreated config: " + config.toString());
 
         mSurfaceCreated = true;
         GLES20.glClearColor(0, 0, 0, 1);
@@ -195,7 +195,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
 
     @Override
     public void onSurfaceChanged(final GL10 gl, final int width, final int height) {
-        Log.d(TAG, "onSurfaceChanged, width: %d, height: %d", width, height);
+        OLog.d(TAG, "onSurfaceChanged, width: %d, height: %d", width, height);
 
         mOutputWidth = width;
         mOutputHeight = height;
@@ -208,7 +208,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
     }
 
     public void onSurfaceDestroyed() {
-        Log.i(TAG, "onSurfaceDestroyed %b", null != mFilter);
+        OLog.i(TAG, "onSurfaceDestroyed %b", null != mFilter);
 
         if (null != mFilter) {
             mFilter.destroy();
@@ -350,7 +350,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
         // 如果还没到下一帧所要求的时间点,则丢弃这一帧
         if ((SystemClock.uptimeMillis() - mFirstFrameTick) < (mFrameCount + 1) * (1000 / mCameraFrameRate)) {
             cameraLoader.addCallbackBuffer(data);
-            Log.v(TAG, "too many frames from camera, drop it");
+            OLog.v(TAG, "too many frames from camera, drop it");
             return;
         }
 
@@ -520,7 +520,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
     }
 
     public void destroySurface() {
-        Log.i(TAG, "destroySurface %b", null != mSurfaceView);
+        OLog.i(TAG, "destroySurface %b", null != mSurfaceView);
         if (null == mSurfaceView) {
             return;
         }

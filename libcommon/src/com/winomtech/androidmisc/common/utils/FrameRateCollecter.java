@@ -1,6 +1,6 @@
 package com.winomtech.androidmisc.common.utils;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 
 /**
  * @since 2016-08-18
@@ -43,7 +43,7 @@ public class FrameRateCollecter {
         mLastFrameTick = tick;
 
         if (tick - mLastOutputTIck >= SdkConstants.MS_OF_A_SECOND) {
-            Log.v(TAG, "name: %s fps: %.1f", mName, (mFrameCount * 1000.0f / (tick - mStartTick)));
+            OLog.v(TAG, "name: %s fps: %.1f", mName, (mFrameCount * 1000.0f / (tick - mStartTick)));
             mLastOutputTIck = tick;
         }
     }

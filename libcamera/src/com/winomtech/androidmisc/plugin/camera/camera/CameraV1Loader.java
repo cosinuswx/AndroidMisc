@@ -6,7 +6,7 @@ import android.hardware.Camera;
 import android.opengl.GLES20;
 import android.view.MotionEvent;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.utils.Size;
 
 import java.nio.ByteBuffer;
@@ -76,7 +76,7 @@ public class CameraV1Loader implements ICameraLoader, Camera.PreviewCallback {
             camera.setPreviewCallbackWithBuffer(this);
             camera.startPreview();
         } catch (Exception e) {
-            Log.e(TAG, "setup camera failed, " + e.getMessage());
+            OLog.e(TAG, "setup camera failed, " + e.getMessage());
         }
     }
 

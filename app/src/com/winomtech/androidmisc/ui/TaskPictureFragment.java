@@ -1,5 +1,6 @@
 package com.winomtech.androidmisc.ui;
 
+import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -8,7 +9,6 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Surface;
@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.R;
 
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class TaskPictureFragment extends Fragment implements SurfaceHolder.Callb
 			mCamera.setParameters(params);
 			mCamera.startPreview();
 		} catch (IOException e) {
-			Log.e(TAG, "open failed: " + e.getMessage());
+			OLog.e(TAG, "open failed: " + e.getMessage());
 		}
 	}
 	
@@ -108,7 +108,7 @@ public class TaskPictureFragment extends Fragment implements SurfaceHolder.Callb
 		List<Size> lstSize = params.getSupportedPictureSizes();
 		Size maxSize = camera.new Size(0, 1);
 		for (Size size : lstSize) {
-			Log.d(TAG, "picture size, width: %d, height: %d", size.width, size.height);
+			OLog.d(TAG, "picture size, width: %d, height: %d", size.width, size.height);
 			if (size.width * size.height <= MAX_PICTURE_SIZE && maxSize.width * maxSize.height < size.width * size.height) {
 				float curDiff = diff(size.width, size.height, width, height);
 				float maxDiff = diff(maxSize.width, maxSize.height, width, height);
@@ -119,7 +119,7 @@ public class TaskPictureFragment extends Fragment implements SurfaceHolder.Callb
 			}
 		}
 		params.setPictureSize(maxSize.width, maxSize.height);
-		Log.d(TAG, "setFitPictureSize, width: %d, height: %d", maxSize.width, maxSize.height);
+		OLog.d(TAG, "setFitPictureSize, width: %d, height: %d", maxSize.width, maxSize.height);
 	}
 
 	static float diff(float w1, float h1, float w2, float h2) {
@@ -173,7 +173,7 @@ public class TaskPictureFragment extends Fragment implements SurfaceHolder.Callb
 		List<Size> lstPreview = camera.getParameters().getSupportedPreviewSizes();
 		Size maxSize = camera.new Size(1, 1);
 		for (Camera.Size size : lstPreview) {
-			Log.d(TAG, "width: %d, height: %d", size.width, size.height);
+			OLog.d(TAG, "width: %d, height: %d", size.width, size.height);
 			if (maxSize.width * maxSize.height < size.width * size.height) {
 				maxSize.width = size.width;
 				maxSize.height = size.height;

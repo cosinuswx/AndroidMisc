@@ -1,6 +1,6 @@
 package com.winomtech.androidmisc.plugin.jni;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.plugin.IPlugin;
 
 /**
@@ -16,6 +16,6 @@ public class Plugin implements IPlugin {
 
 	@Override
 	public void init() {
-		Log.d(TAG, "jni plugin init");
+		OLog.d(TAG, "jni plugin init");
 	}
 }

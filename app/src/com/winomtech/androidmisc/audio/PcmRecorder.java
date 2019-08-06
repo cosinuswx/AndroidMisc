@@ -5,7 +5,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Process;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 
 /**
  * @author kevinhuang
@@ -31,22 +31,22 @@ public class PcmRecorder {
 		mBufSize = sampleRate * 20 / 1000 * channelCnt * AUDIO_FORMAT_IN_BYTE;
 		mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, channelConfig, AUDIO_FORMAT, 8 * minBufSize);
 		mWavWriter = new WavWriter(filePath, channelCnt, sampleRate, AUDIO_FORMAT);
-		Log.e(TAG, "state: " + mAudioRecord.getState());
+		OLog.e(TAG, "state: " + mAudioRecord.getState());
 	}
 
 	public void startRecord() {
-		Log.d(TAG, "startRecord");
+		OLog.d(TAG, "startRecord");
 		mRecordThread = new RecordThread();
 		mRecordThread.start();
 	}
 
 	public void stopRecord() {
-		Log.d(TAG, "stopRecord");
+		OLog.d(TAG, "stopRecord");
 		mStopFlag = true;
 		try {
 			mRecordThread.join();
 		} catch (InterruptedException e) {
-			Log.e(TAG, "InterruptedException " + e.getMessage());
+			OLog.e(TAG, "InterruptedException " + e.getMessage());
 		}
 	}
 
@@ -57,11 +57,11 @@ public class PcmRecorder {
 	class RecordThread extends Thread {
 		@Override
 		public void run() {
-			Log.d(TAG, "thread run");
+			OLog.d(TAG, "thread run");
 			Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
 
 			if (mAudioRecord.getState() == AudioRecord.STATE_UNINITIALIZED) {
-				Log.e(TAG, "unInit");
+				OLog.e(TAG, "unInit");
 				return;
 			}
 
@@ -75,7 +75,7 @@ public class PcmRecorder {
 			mWavWriter.closeFile();
 			mAudioRecord.stop();
 			mAudioRecord.release();
-			Log.d(TAG, "thread end");
+			OLog.d(TAG, "thread end");
 		}
 	}
 

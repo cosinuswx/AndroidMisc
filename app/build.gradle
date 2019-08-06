@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '24.0.3'
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         applicationId "com.winom.androidmisc"
@@ -30,6 +30,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 if (file(getRootDir().getPath() + "/release-tools/cert.gradle").exists()) {
@@ -37,9 +42,8 @@ if (file(getRootDir().getPath() + "/release-tools/cert.gradle").exists()) {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':libcommon')
-    compile project(':libcamera')
-    compile project(':jni')
-    compile 'com.github.bumptech.glide:glide:4.9.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':libcommon')
+    implementation project(':libcamera')
+    implementation project(':jni')
 }

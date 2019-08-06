@@ -1,26 +1,30 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '24.0.2'
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
-            jni.srcDirs = ['jni']
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 26
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+                // abiFilters "armeabi-v7a"
+            }
         }
     }
 
-    defaultConfig {
-        ndk {
-            moduleName 'andoridmisc'
-            ldLibs 'log'
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -29,5 +33,5 @@ repositories {
 }
 
 dependencies {
-    compile project(':libcommon')
+    implementation project(':libcommon')
 }

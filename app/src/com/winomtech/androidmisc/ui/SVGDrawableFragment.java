@@ -1,13 +1,12 @@
 package com.winomtech.androidmisc.ui;
 
+import android.app.Fragment;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ public class SVGDrawableFragment extends Fragment {
 
 	final static int DEFAULT_VALUE = 400;
 
-	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_svg_drawable, container, false);

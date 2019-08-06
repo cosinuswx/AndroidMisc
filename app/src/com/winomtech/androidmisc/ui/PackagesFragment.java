@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.R;
 import com.winomtech.androidmisc.common.asynccomponent.ITask;
 import com.winomtech.androidmisc.common.asynccomponent.TaskExecutor;
@@ -68,7 +68,7 @@ public class PackagesFragment extends Fragment implements
 			executor.addTransRule(STATE_GETDATA, 0, STATE_FINISH);
 			executor.execute(STATE_GETDATA, null, null);
 		} catch (Exception e) {
-			Log.e(TAG, "executor failed: " + e.getMessage());
+			OLog.e(TAG, "executor failed: " + e.getMessage());
 		}
 		return rootView;
 	}
@@ -139,12 +139,12 @@ public class PackagesFragment extends Fragment implements
 		int end = mListView.getLastVisiblePosition();
 		int count = end - start;
 		for (int i = 0; i <= count; ++i) {
-			Log.i("test", "pos: " + i);
+			OLog.i("test", "pos: " + i);
 			View v = mListView.getChildAt(i);
 			if (y <= v.getBottom()) {
 				pos = i;
 				PackageAdapter.ViewHolder holder = (PackageAdapter.ViewHolder) v.getTag();
-				Log.d("test", "on name: " + holder.tvName.getText());
+				OLog.d("test", "on name: " + holder.tvName.getText());
 				break;
 			}
 		}

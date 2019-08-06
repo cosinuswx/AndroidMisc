@@ -5,7 +5,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -39,12 +39,12 @@ public class ThreadPool implements MMThreadPoolExecutor.IExecutorCallback {
 	}
 	
 	public static void post(Runnable runnable, String name, int prority) {
-		Log.i(TAG, "add task, runnable: %s, name: %s, prority: %d", runnable.toString(), name, prority);
+		OLog.i(TAG, "add task, runnable: %s, name: %s, prority: %d", runnable.toString(), name, prority);
 		getInstance().addTask(runnable, name, prority);
 	}
 
 	public static void remove(Runnable runnable) {
-		Log.i(TAG, "remote task, runnable: %s", runnable);
+		OLog.i(TAG, "remote task, runnable: %s", runnable);
 		getInstance().removeTask(runnable);
 	}
 
@@ -89,7 +89,7 @@ public class ThreadPool implements MMThreadPoolExecutor.IExecutorCallback {
 				TimeUnit.SECONDS,
 				mExecutingQueue,
 				this);
-		Log.i(TAG, "normal thread timeout: " + mPoolExecutor.getKeepAliveTime(TimeUnit.SECONDS));
+		OLog.i(TAG, "normal thread timeout: " + mPoolExecutor.getKeepAliveTime(TimeUnit.SECONDS));
 
 		HandlerThread handlerThread = new HandlerThread("pool_handler");
 		handlerThread.start();
@@ -132,16 +132,16 @@ public class ThreadPool implements MMThreadPoolExecutor.IExecutorCallback {
 
 	void executeTask() {
 		synchronized (mLockObj) {
-			Log.d(TAG, "executeTask, waitting queue size: " + mWaittingQueue.size());
+			OLog.d(TAG, "executeTask, waitting queue size: " + mWaittingQueue.size());
 
 			// 先检查下当前列表里面的任务是不是过多了
 			if (mExecutingQueue.size() > MAX_THREAD_SIZE) {
-				Log.i(TAG, "too many task in exectour queue");
+				OLog.i(TAG, "too many task in exectour queue");
 				return;
 			}
 			
 			if (mWaittingQueue.size() <= 0) {
-				Log.d(TAG, "no task need to executor");
+				OLog.d(TAG, "no task need to executor");
 				return;
 			}
 			
@@ -161,7 +161,7 @@ public class ThreadPool implements MMThreadPoolExecutor.IExecutorCallback {
 	@Override
 	public void beforeExecute(Thread t, Runnable r) {
 		String name = ((ThreadTask) r).taskName;
-		Log.d(TAG, "beforeExecute, name: %s, r: %s", name, r.toString());
+		OLog.d(TAG, "beforeExecute, name: %s, r: %s", name, r.toString());
 		synchronized (mLockObj) {
 			t.setName("ThreadPool_" + name);
 		}
@@ -169,7 +169,7 @@ public class ThreadPool implements MMThreadPoolExecutor.IExecutorCallback {
 
 	@Override
 	public void afterExecute(Runnable r, Throwable t) {
-		Log.d(TAG, "afterExecute, name: %s, r: %s", ((ThreadTask) r).taskName, r.toString());
+		OLog.d(TAG, "afterExecute, name: %s, r: %s", ((ThreadTask) r).taskName, r.toString());
 		mHandler.sendEmptyMessage(MSG_EXECUTE_TASK);
 	}
 	

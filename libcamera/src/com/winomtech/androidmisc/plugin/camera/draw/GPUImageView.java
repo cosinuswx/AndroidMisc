@@ -26,7 +26,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.FrameLayout;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;
 
@@ -144,7 +144,7 @@ public class GPUImageView extends FrameLayout {
     public Bitmap capture() throws InterruptedException {
         // 如果surface都没创建,那么render线程应该也没创建出来,会导致watier.acquire()一直卡死在那
         if (null == mGPUImage || null == mGPUImage.mRenderer || !mGPUImage.mRenderer.isSurfaceCreated()) {
-            Log.i(TAG, "surface not create, can't capture");
+            OLog.i(TAG, "surface not create, can't capture");
             throw new InterruptedException();
         }
 
@@ -153,7 +153,7 @@ public class GPUImageView extends FrameLayout {
         final int width = mGPUImage.getRenderer().getOutputWidth();
         final int height = mGPUImage.getRenderer().getOutputHeight();
         if (width <= 0 || height <= 0) {
-            Log.w(TAG, "width or height is zero!");
+            OLog.w(TAG, "width or height is zero!");
             throw new InterruptedException();
         }
 
@@ -187,7 +187,7 @@ public class GPUImageView extends FrameLayout {
      * Pauses the GLSurfaceView.
      */
     public void onPause() {
-        Log.i(TAG, "pause gpuimage view and destroy filters");
+        OLog.i(TAG, "pause gpuimage view and destroy filters");
 
         mGPUImage.getRenderer().destroySurface();
         mGLSurfaceView.onPause();

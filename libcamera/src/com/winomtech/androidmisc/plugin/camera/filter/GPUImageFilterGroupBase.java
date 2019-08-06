@@ -18,7 +18,7 @@ package com.winomtech.androidmisc.plugin.camera.filter;
 
 import android.opengl.GLES20;
 
-import com.winom.olog.Log;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.plugin.camera.utils.OpenGlUtils;
 import com.winomtech.androidmisc.plugin.camera.utils.Rotation;
 import com.winomtech.androidmisc.plugin.camera.utils.TextureRotationUtil;
@@ -78,7 +78,7 @@ public abstract class GPUImageFilterGroupBase extends GPUImageFilter {
     private void destroyFramebuffers() {
         if (mDoubleFBTexture != null) {
             for (int i = 0; i < mDoubleFBBuffer.length; ++i) {
-                Log.d(TAG, "delete textureId: %d, fbId: %d", mDoubleFBTexture[i], mDoubleFBBuffer[i]);
+                OLog.d(TAG, "delete textureId: %d, fbId: %d", mDoubleFBTexture[i], mDoubleFBBuffer[i]);
             }
 
             GLES20.glDeleteTextures(mDoubleFBTexture.length, mDoubleFBTexture, 0);
@@ -109,7 +109,7 @@ public abstract class GPUImageFilterGroupBase extends GPUImageFilter {
                 GLES20.glGenFramebuffers(1, mDoubleFBBuffer, i);
                 GLES20.glGenTextures(1, mDoubleFBTexture, i);
                 OpenGlUtils.bindTextureToFrameBuffer(mDoubleFBBuffer[i], mDoubleFBTexture[i], width, height);
-                Log.d(TAG, "new textureId: %d, fbId: %d", mDoubleFBTexture[i], mDoubleFBBuffer[i]);
+                OLog.d(TAG, "new textureId: %d, fbId: %d", mDoubleFBTexture[i], mDoubleFBBuffer[i]);
             }
         }
     }

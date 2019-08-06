@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '24.0.2'
+    buildToolsVersion '24.0.3'
 
     defaultConfig {
         applicationId "com.winom.androidmisc"
@@ -41,5 +41,5 @@ dependencies {
     compile project(':libcommon')
     compile project(':libcamera')
     compile project(':jni')
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.github.bumptech.glide:glide:4.9.0'
 }

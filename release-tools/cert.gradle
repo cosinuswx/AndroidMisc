@@ -1,10 +1,10 @@
 android {
 	signingConfigs {
 		releaseSigning {
-			storeFile file(getRootDir().getPath() + '/release-tools/androidmisc.keystore')
-			storePassword '111'
-			keyAlias 'androidmisc'
-			keyPassword '111'
+			storeFile file(getRootDir().getPath() + '/release-tools/debug.keystore')
+			storePassword 'android'
+			keyAlias 'androiddebugkey'
+			keyPassword 'android'
 		}
 	}
 

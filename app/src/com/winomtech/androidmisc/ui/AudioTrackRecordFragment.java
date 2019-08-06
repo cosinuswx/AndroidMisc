@@ -1,6 +1,5 @@
 package com.winomtech.androidmisc.ui;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,53 +12,48 @@ import com.winomtech.androidmisc.audio.PcmRecorder;
 import com.winomtech.androidmisc.common.constants.Constants;
 import com.winomtech.androidmisc.common.utils.SmTimer;
 
-/**
- * @since 2015-02-05
- * @author kevinhuang
- */
-public class AudioTrackRecordFragment extends Fragment {
-	PcmRecorder		mPcmRecorder;
-	Button			mBtnTrigger;
-	ProgressBar		mProgressBar;
-	SmTimer			mSmTimer;
+import androidx.fragment.app.Fragment;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_audiotrack_record, container, false);
-		mBtnTrigger = (Button) rootView.findViewById(R.id.btn_record_trigger);
-		mBtnTrigger.setOnClickListener(mTriggerLsn);
-		mProgressBar = (ProgressBar) rootView.findViewById(R.id.pb_voice_ampli);
-		mProgressBar.setMax(65536);
-		return rootView;
-	}
-	
-	View.OnClickListener mTriggerLsn = new View.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			if (null == v.getTag()) {
-				mBtnTrigger.setBackgroundResource(R.drawable.selector_stop_record);
-				v.setTag(1);
-				mPcmRecorder = new PcmRecorder(16000, 1, Constants.WAV_FILE_PATH);
-				mPcmRecorder.startRecord();
-				
-				mSmTimer = new SmTimer(mTimerCallback);
-				mSmTimer.startIntervalTimer(0, 100);
-			} else {
-				mPcmRecorder.stopRecord();
-				mBtnTrigger.setBackgroundResource(R.drawable.selector_start_record);
-				v.setTag(null);
-				mSmTimer.stopTimer();
-				mSmTimer = null;
-			}
-		}
-	};
-	
-	SmTimer.SmTimerCallback mTimerCallback = new SmTimer.SmTimerCallback() {
-		@Override
-		public void onTimeout() {
-			if (null != mPcmRecorder) {
-				mProgressBar.setProgress(mPcmRecorder.getAmplitude());
-			}
-		}
-	};
+public class AudioTrackRecordFragment extends Fragment {
+    private PcmRecorder mPcmRecorder;
+    private Button mBtnTrigger;
+    private ProgressBar mProgressBar;
+    private SmTimer mSmTimer;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_audiotrack_record, container, false);
+        mBtnTrigger = rootView.findViewById(R.id.btn_record_trigger);
+        mBtnTrigger.setOnClickListener(this::onClickTrigger);
+        mProgressBar = rootView.findViewById(R.id.pb_voice_ampli);
+        mProgressBar.setMax(65536);
+        return rootView;
+    }
+
+    private void onClickTrigger(View view) {
+        if (null == view.getTag()) {
+            mBtnTrigger.setBackgroundResource(R.drawable.selector_stop_record);
+            view.setTag(true);
+            mPcmRecorder = new PcmRecorder(16000, 1, Constants.WAV_FILE_PATH);
+            mPcmRecorder.startRecord();
+
+            mSmTimer = new SmTimer(mTimerCallback);
+            mSmTimer.startIntervalTimer(0, 100);
+        } else {
+            mPcmRecorder.stopRecord();
+            mBtnTrigger.setBackgroundResource(R.drawable.selector_start_record);
+            view.setTag(null);
+            mSmTimer.stopTimer();
+            mSmTimer = null;
+        }
+    }
+
+    private SmTimer.SmTimerCallback mTimerCallback = new SmTimer.SmTimerCallback() {
+        @Override
+        public void onTimeout() {
+            if (null != mPcmRecorder) {
+                mProgressBar.setProgress(mPcmRecorder.getAmplitude());
+            }
+        }
+    };
 }

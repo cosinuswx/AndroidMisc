@@ -1,8 +1,8 @@
 package com.winomtech.androidmisc.plugin.camera.ui;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,7 +18,6 @@ import com.winomtech.androidmisc.plugin.camera.camera.CameraV2Loader;
 import com.winomtech.androidmisc.plugin.camera.camera.ICameraLoader;
 import com.winomtech.androidmisc.plugin.camera.draw.GPUImageView;
 import com.winomtech.androidmisc.plugin.camera.draw.OnSurfaceListener;
-import com.winomtech.androidmisc.plugin.camera.filter.BlackWhiteFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroup;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;

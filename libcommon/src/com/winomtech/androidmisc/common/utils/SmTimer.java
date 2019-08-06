@@ -10,7 +10,7 @@ public class SmTimer extends Handler {
 	private SmTimerCallback mCallback;
 
 	public interface SmTimerCallback {
-		public void		onTimeout();
+		void onTimeout();
 	}
 
 	public SmTimer(SmTimerCallback callback) {

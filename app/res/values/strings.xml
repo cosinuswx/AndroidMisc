@@ -2,24 +2,12 @@
 
 	<string name="app_name">AndroidMisc</string>
 
-	<string name="entry_copy_traces_to_sdcard">复制traces.txt到sd卡</string>
-	<string name="entry_app_list">APP列表</string>
 	<string name="entry_mediarecorder_audio">MediaRecorder录音</string>
 	<string name="entry_record_play">AudioRecord录音</string>
 	<string name="entry_take_picture">Preview拍照</string>
-	<string name="entry_system_info">系统信息</string>
-	<string name="entry_pick_time">选择时间</string>
 	<string name="entry_svg_drawable">SVG图像测试</string>
 	<string name="entry_render_script_exp">RS测试</string>
     <string name="entry_gpuimage_use_old_camera">GPUImage（Old Camera）</string>
     <string name="entry_gpuimage_use_camera2">GPUImage（Camera2）</string>
 
-	<string name="str_please_waitting">正在处理中，请稍候&#8230;</string>
-	<string name="str_progressing" formatted="false">正在处理中，第%d个（共%d个）</string>
-	<string name="str_finish">处理完成！</string>
-
-	<string name="str_start">开始</string>
-	<string name="str_stop">停止</string>
-
-	<string name="str_audio_mode_info" formatted="false">语音模式：%d</string>
 </resources>

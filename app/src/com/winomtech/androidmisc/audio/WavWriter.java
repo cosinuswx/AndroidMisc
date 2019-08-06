@@ -14,16 +14,12 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-/**
- * @author kevinhuang
- * @since 2015-01-20
- */
 public class WavWriter {
-	final static String TAG = WavWriter.class.getSimpleName();
+	private final static String TAG = WavWriter.class.getSimpleName();
 
-	String mFilePath;
-	DataOutputStream mDataOutputStream;
-	int mFileSize;
+    private String mFilePath;
+    private DataOutputStream mDataOutputStream;
+    private int mFileSize;
 
 	public WavWriter(String path, int channelCnt, int sampleRate, int audioEncoding) {
 		mFilePath = path;

@@ -24,7 +24,7 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.utils.FrameRateCollecter;

@@ -1,6 +1,5 @@
 package com.winomtech.androidmisc.ui;
 
-import android.app.Fragment;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.Rect;
@@ -18,59 +17,55 @@ import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGParser;
 import com.winomtech.androidmisc.R;
 
-/**
- * @since 2015年09月02日
- * @author kevinhuang 
- */
+import androidx.fragment.app.Fragment;
+
 public class SVGDrawableFragment extends Fragment {
-	static final String TAG = "SVGDrawableFragment";
+    private final static int DEFAULT_VALUE = 400;
 
-	ImageView mIvPicContainer;
-	SeekBar mPbScaleValue;
-	SVG mSvg;
+    private ImageView mIvPicContainer;
+    private SeekBar mPbScaleValue;
+    private SVG mSvg;
 
-	final static int DEFAULT_VALUE = 400;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_svg_drawable, container, false);
+        mIvPicContainer = rootView.findViewById(R.id.iv_pic_container);
+        
+        mPbScaleValue = rootView.findViewById(R.id.pb_scale_value);
+        mPbScaleValue.setMax(100);
+        mPbScaleValue.setOnSeekBarChangeListener(mSeekBarChgLsn);
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_svg_drawable, container, false);
-		mIvPicContainer = (ImageView) rootView.findViewById(R.id.iv_pic_container);
-		
-		mPbScaleValue = (SeekBar) rootView.findViewById(R.id.pb_scale_value);
-		mPbScaleValue.setMax(100);
-		mPbScaleValue.setOnSeekBarChangeListener(mSeekBarChgLsn);
+        mSvg = SVGParser.getSVGFromResource(getResources(), R.raw.pic_s9_11);
+        mIvPicContainer.setImageDrawable(mSvg.createPictureDrawable());
+        return rootView;
+    }
 
-		mSvg = SVGParser.getSVGFromResource(getResources(), R.raw.pic_s9_11);
-		mIvPicContainer.setImageDrawable(mSvg.createPictureDrawable());
-		return rootView;
-	}
+    private SeekBar.OnSeekBarChangeListener mSeekBarChgLsn = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            int value = (int) (progress / 10f * DEFAULT_VALUE); 
+        
+            Picture resizePicture = new Picture();
+            Canvas canvas = resizePicture.beginRecording(value, value);
 
-	SeekBar.OnSeekBarChangeListener mSeekBarChgLsn = new SeekBar.OnSeekBarChangeListener() {
-		@Override
-		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-			int value = (int) (progress / 10f * DEFAULT_VALUE); 
-		
-			Picture resizePicture = new Picture();
-			Canvas canvas = resizePicture.beginRecording(value, value);
+            canvas.drawPicture(mSvg.getPicture(), new Rect(0, 0, value, value));
+            resizePicture.endRecording();
 
-			canvas.drawPicture(mSvg.getPicture(), new Rect(0, 0, value, value));
-			resizePicture.endRecording();
+            // get a drawable from resizePicture
+            Drawable vectorDrawing = new PictureDrawable(resizePicture);
+            mIvPicContainer.setImageDrawable(vectorDrawing);
 
-			// get a drawable from resizePicture
-			Drawable vectorDrawing = new PictureDrawable(resizePicture);
-			mIvPicContainer.setImageDrawable(vectorDrawing);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mIvPicContainer.getLayoutParams();
+            params.width = params.height = value;
+            mIvPicContainer.setLayoutParams(params);
+        }
 
-			RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mIvPicContainer.getLayoutParams();
-			params.width = params.height = value;
-			mIvPicContainer.setLayoutParams(params);
-		}
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
 
-		@Override
-		public void onStartTrackingTouch(SeekBar seekBar) {
-		}
-
-		@Override
-		public void onStopTrackingTouch(SeekBar seekBar) {
-		}
-	};
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
+    };
 }

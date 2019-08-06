@@ -9,10 +9,8 @@ import com.winomtech.androidmisc.common.constants.Constants;
 import com.winomtech.androidmisc.common.cores.AmCore;
 import com.winomtech.androidmisc.common.utils.MiscUtils;
 import com.winomtech.androidmisc.plugin.PluginManager;
-import com.winomtech.androidmisc.utils.BuildInfo;
 
 public class MiscApplication extends Application {
-    private final static String TAG = "MMApplication";
     private final static String sourcePkgName = "com.winomtech.androidmisc";
 
     private static Context sContext;
@@ -33,8 +31,6 @@ public class MiscApplication extends Application {
         // 加载插件
         PluginManager.loadPlugin(Constants.PLUGIN_JNI);
         PluginManager.loadPlugin(Constants.PLUGIN_CAMERA);
-
-        OLog.i(TAG, BuildInfo.info());
     }
 
     public static String getSourcePkgName() {

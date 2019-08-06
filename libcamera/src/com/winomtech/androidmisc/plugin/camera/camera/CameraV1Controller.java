@@ -9,11 +9,12 @@ import android.view.MotionEvent;
 import android.view.Surface;
 
 import com.winom.olog.OLog;
-import com.winomtech.androidmisc.common.thread.ThreadPool;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import io.reactivex.schedulers.Schedulers;
 
 public class CameraV1Controller {
     private final static String TAG = "CameraV1Controller";
@@ -73,7 +74,7 @@ public class CameraV1Controller {
     }
 
     public void focusOnTouch(final MotionEvent event, final int viewWidth, final int viewHeight) {
-        ThreadPool.post(() -> focusOnWorkerThread(event, viewWidth, viewHeight), "autofocus");
+        Schedulers.io().scheduleDirect(() -> focusOnWorkerThread(event, viewWidth, viewHeight));
     }
 
     private void focusOnWorkerThread(final MotionEvent event, final int viewWidth, final int viewHeight) {

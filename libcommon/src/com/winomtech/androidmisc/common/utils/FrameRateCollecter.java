@@ -2,25 +2,21 @@ package com.winomtech.androidmisc.common.utils;
 
 import com.winom.olog.OLog;
 
-/**
- * @since 2016-08-18
- * @author kevinhuang 
- */
 public class FrameRateCollecter {
-    static final String TAG = "FrameRateCollecter";
+    private static final String TAG = "FrameRateCollecter";
 
-    String mName;
-    long mStartTick;
-    long mFrameCount;
-    long mLastFrameTick;
-    long mLastOutputTIck;
+    private String mName;
+    private long mStartTick;
+    private long mFrameCount;
+    private long mLastFrameTick;
+    private long mLastOutputTIck;
 
     public FrameRateCollecter(String name) {
         mName = name;
         reset();
     }
 
-    void reset() {
+    private void reset() {
         mStartTick = -1;
         mFrameCount = 0;
         mLastFrameTick = -1;

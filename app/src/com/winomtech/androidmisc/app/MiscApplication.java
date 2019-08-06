@@ -7,19 +7,27 @@ import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.constants.Constants;
 import com.winomtech.androidmisc.common.cores.AmCore;
 import com.winomtech.androidmisc.common.utils.AppProperties;
-import com.winomtech.androidmisc.common.utils.MiscUtils;
 import com.winomtech.androidmisc.plugin.PluginManager;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOError;
+import java.io.IOException;
+
 public class MiscApplication extends Application {
-    private final static String sourcePkgName = "com.winomtech.androidmisc";
 
     @Override
     public void onCreate() {
         super.onCreate();
         AppProperties.init(this);
 
-        MiscUtils.mkdirs(Constants.SDCARD_PATH);
-        MiscUtils.mkdirs(Constants.LOG_SAVE_PATH);
+        try {
+            FileUtils.forceMkdir(new File(Constants.SDCARD_PATH));
+            FileUtils.forceMkdir(new File(Constants.LOG_SAVE_PATH));
+        } catch (IOException e) {
+            throw new IOError(e);
+        }
 
         OLog.setLogImpl(new LogImpl(Constants.LOG_SAVE_PATH, "MM", ".olog"));
         OLog.setLogLevel(OLog.LEVEL_VERBOSE);
@@ -33,6 +41,6 @@ public class MiscApplication extends Application {
     }
 
     public static String getSourcePkgName() {
-        return sourcePkgName;
+        return Constants.PACKAGE_NAME;
     }
 }

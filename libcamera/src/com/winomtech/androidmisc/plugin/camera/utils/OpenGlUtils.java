@@ -26,7 +26,6 @@ import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
-import com.winomtech.androidmisc.common.utils.MiscUtils;
 import com.winomtech.androidmisc.plugin.camera.filter.FilterConstants;
 
 import java.nio.Buffer;
@@ -211,7 +210,7 @@ public class OpenGlUtils {
     private static void checkGlError(String op) {
         int error;
         while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
-            Log.e(TAG, op + ": glError " + GLUtils.getEGLErrorString(error) + " stack: \n" + MiscUtils.getStack(true));
+            Log.e(TAG, op + ": glError " + GLUtils.getEGLErrorString(error));
             tryOutputContext();
         }
     }

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
@@ -124,8 +125,8 @@ public class TaskPictureFragment extends Fragment implements SurfaceHolder.Callb
     }
 
     private void setDisplayOrientation(Camera camera, int cameraId) {
-        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
+        CameraInfo info = new CameraInfo();
+        Camera.getCameraInfo(cameraId, info);
         int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
         int degrees = 0;
         switch (rotation) {
@@ -143,7 +144,7 @@ public class TaskPictureFragment extends Fragment implements SurfaceHolder.Callb
             break;
         }
         int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+        if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
             result = (info.orientation + 180 - degrees + 360) % 360;
         } else {
             result = (info.orientation - degrees + 360) % 360;
@@ -156,9 +157,9 @@ public class TaskPictureFragment extends Fragment implements SurfaceHolder.Callb
         int cameraCnt = Camera.getNumberOfCameras();
         int cameraId = 0;
         for (int i = 0; i < cameraCnt; ++i) {
-            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+            CameraInfo cameraInfo = new CameraInfo();
             Camera.getCameraInfo(i, cameraInfo);
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            if (cameraInfo.facing == CameraInfo.CAMERA_FACING_FRONT) {
                 cameraId = i;
                 break;
             }

@@ -18,6 +18,7 @@ import android.hardware.camera2.params.MeteringRectangle;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import androidx.annotation.NonNull;
@@ -25,7 +26,6 @@ import android.view.MotionEvent;
 import android.view.Surface;
 
 import com.winom.olog.OLog;
-import com.winomtech.androidmisc.common.utils.ApiLevel;
 import com.winomtech.androidmisc.common.utils.Size;
 import com.winomtech.androidmisc.plugin.jni.JniEntry;
 
@@ -37,11 +37,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author kevinhuang
- * @since 2017-03-02
- */
-@TargetApi(ApiLevel.API21_KLOLLIPOP)
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailableListener {
     private static final String TAG = "CameraV2Loader";
 
@@ -155,7 +151,7 @@ public class CameraV2Loader implements ICameraLoader, ImageReader.OnImageAvailab
         }
 
         // 计算摄像头取出的图像相对于view放大了多少，以及有多少偏移
-        double imgScale = 1.0, verticalOffset = 0, horizontalOffset = 0;
+        double imgScale, verticalOffset = 0, horizontalOffset = 0;
         if (realPreviewHeight * viewWidth > realPreviewWidth * viewHeight) {
             imgScale = viewWidth * 1.0 / realPreviewWidth;
             verticalOffset = (realPreviewHeight - viewHeight / imgScale) / 2;

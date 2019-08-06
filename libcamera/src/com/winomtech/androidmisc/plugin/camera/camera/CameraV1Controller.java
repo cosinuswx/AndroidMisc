@@ -10,11 +10,9 @@ import android.view.Surface;
 
 import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.thread.ThreadPool;
-import com.winomtech.androidmisc.common.utils.ApiLevel;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class CameraV1Controller {
@@ -75,12 +73,7 @@ public class CameraV1Controller {
     }
 
     public void focusOnTouch(final MotionEvent event, final int viewWidth, final int viewHeight) {
-        ThreadPool.post(new Runnable() {
-            @Override
-            public void run() {
-                focusOnWorkerThread(event, viewWidth, viewHeight);
-            }
-        }, "autofocus");
+        ThreadPool.post(() -> focusOnWorkerThread(event, viewWidth, viewHeight), "autofocus");
     }
 
     private void focusOnWorkerThread(final MotionEvent event, final int viewWidth, final int viewHeight) {
@@ -91,11 +84,6 @@ public class CameraV1Controller {
 
         if (!mFocusEnd) {
             OLog.d(TAG, "autofocusing...");
-            return;
-        }
-
-        if (ApiLevel.getApiLevel() < ApiLevel.API14_ICE_CREAM_SANDWICH_40) {
-            OLog.e(TAG, "api level below 14, can't use foucs area");
             return;
         }
 
@@ -111,13 +99,13 @@ public class CameraV1Controller {
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
 
         if (parameters.getMaxNumFocusAreas() > 0) {
-            List<Camera.Area> focusAreas = new ArrayList<Camera.Area>();
+            List<Camera.Area> focusAreas = new ArrayList<>();
             focusAreas.add(new Camera.Area(focusRect, 1000));
             parameters.setFocusAreas(focusAreas);
         }
 
         if (parameters.getMaxNumMeteringAreas() > 0) {
-            List<Camera.Area> meteringAreas = new ArrayList<Camera.Area>();
+            List<Camera.Area> meteringAreas = new ArrayList<>();
             meteringAreas.add(new Camera.Area(meteringRect, 1000));
 
             parameters.setMeteringAreas(meteringAreas);
@@ -165,6 +153,7 @@ public class CameraV1Controller {
         return new Rect(left, top, right, bottom);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private int clamp(int x, int min, int max) {
         if (x > max) return max;
         if (x < min) return min;
@@ -286,13 +275,7 @@ public class CameraV1Controller {
         }
 
         if (null == size) {
-            Collections.sort(sizeLst, new Comparator<Camera.Size>() {
-                @Override
-                public int compare(Camera.Size lhs, Camera.Size rhs) {
-                    return lhs.width * lhs.height - rhs.width * rhs.height;
-                }
-            });
-
+            Collections.sort(sizeLst, (lhs, rhs) -> lhs.width * lhs.height - rhs.width * rhs.height);
             Camera.Size it = sizeLst.get(sizeLst.size() / 2);
             size = new Point(it.width, it.height);
         }
@@ -377,7 +360,7 @@ public class CameraV1Controller {
             Camera.Parameters params = mCamera.getParameters();
             if (open) {
                 // android L上面有BUG会导致开了auto之后，无法再off。
-                if (Build.VERSION.SDK_INT < ApiLevel.API21_KLOLLIPOP &&
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP &&
                         params.getSupportedFlashModes().contains(Camera.Parameters.FLASH_MODE_AUTO)) {
                     params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
                     mFlashMode = ICameraLoader.MODE_AUTO;

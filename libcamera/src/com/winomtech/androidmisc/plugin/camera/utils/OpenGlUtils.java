@@ -26,7 +26,6 @@ import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
-import com.winomtech.androidmisc.common.utils.ApiLevel;
 import com.winomtech.androidmisc.common.utils.MiscUtils;
 import com.winomtech.androidmisc.plugin.camera.filter.FilterConstants;
 
@@ -44,7 +43,7 @@ public class OpenGlUtils {
     }
 
     public static int loadTexture(final Bitmap img, final int usedTexId, final boolean recycle) {
-        int textures[] = new int[1];
+        int[] textures = new int[1];
         if (usedTexId == NO_TEXTURE) {
             GLES20.glGenTextures(1, textures, 0);
             Log.d(TAG, "glGenTextures textureId: " + textures[0]);
@@ -77,7 +76,7 @@ public class OpenGlUtils {
     }
 
     public static int loadTexture(final Buffer data, final int width, final int height, final int usedTexId) {
-        int textures[] = new int[1];
+        int[] textures = new int[1];
         if (usedTexId == NO_TEXTURE) {
             GLES20.glGenTextures(1, textures, 0);
             Log.d(TAG, "glGenTextures textureId: " + textures[0]);
@@ -192,7 +191,7 @@ public class OpenGlUtils {
     }
 
     public static long getContextHandle() {
-        if (FilterConstants.DEBUG_GL_ERROR && Build.VERSION.SDK_INT >= ApiLevel.API21_KLOLLIPOP) {
+        if (FilterConstants.DEBUG_GL_ERROR && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return EGL14.eglGetCurrentContext().getNativeHandle();
         } else {
             return 0;
@@ -209,7 +208,7 @@ public class OpenGlUtils {
         }
     }
 
-    static void checkGlError(String op) {
+    private static void checkGlError(String op) {
         int error;
         while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
             Log.e(TAG, op + ": glError " + GLUtils.getEGLErrorString(error) + " stack: \n" + MiscUtils.getStack(true));
@@ -217,8 +216,8 @@ public class OpenGlUtils {
         }
     }
 
-    static void tryOutputContext() {
-        if (FilterConstants.DEBUG_GL_ERROR && Build.VERSION.SDK_INT >= ApiLevel.API17_JELLY_BEAN_42) {
+    private static void tryOutputContext() {
+        if (FilterConstants.DEBUG_GL_ERROR) {
             Log.d(TAG, "context: " + EGL14.eglGetCurrentContext());
         }
     }

@@ -1,24 +1,23 @@
 package com.winomtech.androidmisc.app;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.winom.olog.LogImpl;
 import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.constants.Constants;
 import com.winomtech.androidmisc.common.cores.AmCore;
+import com.winomtech.androidmisc.common.utils.AppProperties;
 import com.winomtech.androidmisc.common.utils.MiscUtils;
 import com.winomtech.androidmisc.plugin.PluginManager;
 
 public class MiscApplication extends Application {
     private final static String sourcePkgName = "com.winomtech.androidmisc";
 
-    private static Context sContext;
-
     @Override
     public void onCreate() {
         super.onCreate();
-        sContext = this;
+        AppProperties.init(this);
+
         MiscUtils.mkdirs(Constants.SDCARD_PATH);
         MiscUtils.mkdirs(Constants.LOG_SAVE_PATH);
 
@@ -35,9 +34,5 @@ public class MiscApplication extends Application {
 
     public static String getSourcePkgName() {
         return sourcePkgName;
-    }
-
-    public static Context getContext() {
-        return sContext;
     }
 }

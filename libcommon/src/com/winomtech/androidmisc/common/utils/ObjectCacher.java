@@ -3,9 +3,6 @@ package com.winomtech.androidmisc.common.utils;
 import java.util.Stack;
 
 /**
- * @since 2015年10月09日
- * @author kevinhuang 
- * 
  * 缓存对象,可重复利用回收的对象,减少GC的触发
  */
 public abstract class ObjectCacher<T> {
@@ -14,16 +11,15 @@ public abstract class ObjectCacher<T> {
 	 **/
 	protected abstract T newInstance();
 
-	int mCacheCnt;
-
-	final Stack<T> mObjCacheStack = new Stack<>();
+	private int mCacheCnt;
+	private final Stack<T> mObjCacheStack = new Stack<>();
 
 	/**
 	 * 构建一个可缓存对象的实例
 	 * 
 	 * @param cacheCnt 缓存的最大数目
 	 */
-	public ObjectCacher(int cacheCnt) {
+    protected ObjectCacher(int cacheCnt) {
 		mCacheCnt = cacheCnt;
 	}
 

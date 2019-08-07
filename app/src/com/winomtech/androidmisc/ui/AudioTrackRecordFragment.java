@@ -5,28 +5,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 
+import com.winom.multimedia.encoder.AudioEncoder;
+import com.winom.multimedia.pipeline.StageExecutor;
+import com.winom.multimedia.pipeline.StageTask;
+import com.winom.multimedia.recorder.AudioRecorder;
+import com.winom.multimedia.writer.Muxer;
+import com.winom.olog.OLog;
 import com.winomtech.androidmisc.R;
-import com.winomtech.androidmisc.audio.PcmRecorder;
-import com.winomtech.androidmisc.common.constants.Constants;
-import com.winomtech.androidmisc.common.utils.SmTimer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-public class AudioTrackRecordFragment extends Fragment {
-    private PcmRecorder mPcmRecorder;
+public class AudioTrackRecordFragment extends Fragment implements StageExecutor.ExecutorListener {
+    private static final String TAG = "AudioTrackRecordFragment";
+
     private Button mBtnTrigger;
-    private ProgressBar mProgressBar;
-    private SmTimer mSmTimer;
+    private AudioRecorder mAudioRecorder;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_audiotrack_record, container, false);
         mBtnTrigger = rootView.findViewById(R.id.btn_record_trigger);
         mBtnTrigger.setOnClickListener(this::onClickTrigger);
-        mProgressBar = rootView.findViewById(R.id.pb_voice_ampli);
-        mProgressBar.setMax(65536);
         return rootView;
     }
 
@@ -34,26 +38,36 @@ public class AudioTrackRecordFragment extends Fragment {
         if (null == view.getTag()) {
             mBtnTrigger.setBackgroundResource(R.drawable.selector_stop_record);
             view.setTag(true);
-            mPcmRecorder = new PcmRecorder(16000, 1, Constants.WAV_FILE_PATH);
-            mPcmRecorder.startRecord();
 
-            mSmTimer = new SmTimer(mTimerCallback);
-            mSmTimer.startIntervalTimer(0, 100);
+            List<StageTask> tasks = new ArrayList<>();
+            mAudioRecorder = new AudioRecorder(48000, 2);
+            tasks.add(new StageTask("audio-recorder", mAudioRecorder));
+
+            AudioEncoder encoder = new AudioEncoder(AudioEncoder.buildMediaFormat(48000, 2, 192 * 1024),
+                    mAudioRecorder);
+            tasks.add(new StageTask("audio-encoder", encoder));
+
+            Muxer muxer = new Muxer("/sdcard/1.mp4");
+            muxer.addTrackProvider(encoder.getFutureOutputFormat(), encoder);
+            tasks.add(new StageTask("writer", muxer));
+
+            StageExecutor executor = new StageExecutor(tasks, this);
+            executor.start();
         } else {
-            mPcmRecorder.stopRecord();
             mBtnTrigger.setBackgroundResource(R.drawable.selector_start_record);
             view.setTag(null);
-            mSmTimer.stopTimer();
-            mSmTimer = null;
+
+            mAudioRecorder.stop();
+            mAudioRecorder = null;
         }
     }
 
-    private SmTimer.SmTimerCallback mTimerCallback = new SmTimer.SmTimerCallback() {
-        @Override
-        public void onTimeout() {
-            if (null != mPcmRecorder) {
-                mProgressBar.setProgress(mPcmRecorder.getAmplitude());
-            }
-        }
-    };
+    @Override
+    public void onAllTaskFinished(StageExecutor executor) {
+        OLog.i(TAG, "all task finished");
+    }
+
+    @Override
+    public void onTaskFailed(StageExecutor executor, StageTask failedTask, Throwable error) {
+    }
 }

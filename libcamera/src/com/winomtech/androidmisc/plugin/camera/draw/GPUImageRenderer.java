@@ -27,7 +27,6 @@ import android.os.SystemClock;
 import androidx.annotation.IntDef;
 
 import com.winom.olog.OLog;
-import com.winomtech.androidmisc.common.utils.FrameRateCollecter;
 import com.winomtech.androidmisc.common.utils.ObjectCacher;
 import com.winomtech.androidmisc.common.utils.Size;
 import com.winomtech.androidmisc.plugin.camera.SubcoreCamera;

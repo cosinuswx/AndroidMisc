@@ -1,6 +1,7 @@
-package com.winomtech.androidmisc.common.utils;
+package com.winomtech.androidmisc.plugin.camera.draw;
 
 import com.winom.olog.OLog;
+import com.winomtech.androidmisc.common.constants.Constants;
 
 public class FrameRateCollecter {
     private static final String TAG = "FrameRateCollecter";
@@ -27,7 +28,7 @@ public class FrameRateCollecter {
         long tick = System.currentTimeMillis();
 
         // 如果上一帧离这一帧时间过长,则需要重置一次,否则平均帧率就会受影响
-        if (-1 != mLastFrameTick && (tick - mLastFrameTick > SdkConstants.MS_OF_A_SECOND)) {
+        if (-1 != mLastFrameTick && (tick - mLastFrameTick > Constants.MS_PER_SECOND)) {
             reset();
         }
 
@@ -38,8 +39,8 @@ public class FrameRateCollecter {
         mFrameCount ++;
         mLastFrameTick = tick;
 
-        if (tick - mLastOutputTIck >= SdkConstants.MS_OF_A_SECOND) {
-            OLog.v(TAG, "name: %s fps: %.1f", mName, (mFrameCount * 1000.0f / (tick - mStartTick)));
+        if (tick - mLastOutputTIck >= Constants.MS_PER_SECOND) {
+            OLog.v(TAG, "name: %s fps: %.1f", mName, (mFrameCount * Constants.MS_PER_SECOND / (tick - mStartTick)));
             mLastOutputTIck = tick;
         }
     }

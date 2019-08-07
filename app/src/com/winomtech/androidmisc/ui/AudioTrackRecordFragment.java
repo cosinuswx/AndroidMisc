@@ -51,6 +51,11 @@ public class AudioTrackRecordFragment extends Fragment implements StageExecutor.
             muxer.addTrackProvider(encoder.getFutureOutputFormat(), encoder);
             tasks.add(new StageTask("writer", muxer));
 
+            /*
+            WavWriter wavWriter = new WavWriter("/sdcard/1.wav", 48000, 2, mAudioRecorder);
+            tasks.add(new StageTask("wav-writer", wavWriter));
+            */
+
             StageExecutor executor = new StageExecutor(tasks, this);
             executor.start();
         } else {

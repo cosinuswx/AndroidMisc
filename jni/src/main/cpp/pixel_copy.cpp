@@ -1,5 +1,6 @@
 #include "jni.h"
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstring>
 
 extern "C"
 JNIEXPORT void JNICALL Java_com_winomtech_androidmisc_plugin_jni_JniEntry_CopyData(JNIEnv *env,

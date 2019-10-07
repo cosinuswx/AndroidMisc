@@ -24,7 +24,6 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
-import androidx.annotation.IntDef;
 
 import com.winom.olog.OLog;
 import com.winomtech.androidmisc.common.utils.ObjectCacher;
@@ -32,7 +31,6 @@ import com.winomtech.androidmisc.common.utils.Size;
 import com.winomtech.androidmisc.plugin.camera.SubcoreCamera;
 import com.winomtech.androidmisc.plugin.camera.camera.CameraPreviewCallback;
 import com.winomtech.androidmisc.plugin.camera.camera.ICameraLoader;
-import com.winomtech.androidmisc.plugin.camera.filter.FilterConstants;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilter;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroup;
 import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;
@@ -52,6 +50,10 @@ import java.util.Queue;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import androidx.annotation.IntDef;
+
+import static com.winomtech.androidmisc.plugin.camera.filter.FilterConstants.CUBE;
+
 @TargetApi(11)
 public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCallback {
     private static final String TAG = "GPUImageRenderer";
@@ -69,66 +71,65 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
     public @interface RenderCmd {
     }
 
-    final static int CMD_PROCESS_FRAME = 0;
-    final static int CMD_SET_FILTER = 2;
-    final static int CMD_DELETE_IMAGE = 3;
-    final static int CMD_SET_IMAGE_BITMAP = 4;
-    final static int CMD_RERUN_ONDRAW_RUNNABLE = 5;
-    final static int CMD_RERUN_DRAWEND_RUNNABLE = 6;
-    final static int CMD_RESET_RS_SIZE = 7;
+    private final static int CMD_PROCESS_FRAME = 0;
+    private final static int CMD_SET_FILTER = 2;
+    private final static int CMD_DELETE_IMAGE = 3;
+    private final static int CMD_SET_IMAGE_BITMAP = 4;
+    private final static int CMD_RERUN_ONDRAW_RUNNABLE = 5;
+    private final static int CMD_RERUN_DRAWEND_RUNNABLE = 6;
+    private final static int CMD_RESET_RS_SIZE = 7;
 
     /**
      * 命令的一项
      */
-    static class CmdItem {
+    private static class CmdItem {
         @RenderCmd
         int cmdId;
         Object param1;
         Object param2;
     }
 
-    static final float CUBE[] = {-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f};
+    private GPUImageFilterGroupBase mFilter;
+    private int mGLTextureId;
 
-    GPUImageFilterGroupBase mFilter;
-    int mGLTextureId;
+    private SurfaceTexture mSurfaceTexture = null;
+    private OnSurfaceListener mSurfaceListener;
 
-    SurfaceTexture mSurfaceTexture = null;
-    OnSurfaceListener mSurfaceListener;
+    private final FloatBuffer mGLCubeBuffer;
+    private final FloatBuffer mGLTextureBuffer;
+    private ByteBuffer mGLRgbBuffer;
 
-    final FloatBuffer mGLCubeBuffer;
-    final FloatBuffer mGLTextureBuffer;
-    ByteBuffer mGLRgbBuffer;
+    private GLSurfaceView mSurfaceView;
+    private int mOutputWidth = 0;
+    private int mOutputHeight = 0;
+    private int mImageWidth = 1;
+    private int mImageHeight = 1;
 
-    int mOutputWidth = 0;
-    int mOutputHeight = 0;
-    int mImageWidth = 1;
-    int mImageHeight = 1;
+    private final Queue<CmdItem> mRunOnDraw;
+    private final Queue<CmdItem> mRunOnDrawEnd;
 
-    final Queue<CmdItem> mRunOnDraw;
-    final Queue<CmdItem> mRunOnDrawEnd;
-
-    Rotation mRotation;
-    boolean mFlipHorizontal;
-    boolean mFlipVertical;
-    GPUImage.ScaleType mScaleType = GPUImage.ScaleType.CENTER_CROP;
+    private Rotation mRotation;
+    private boolean mFlipHorizontal;
+    private boolean mFlipVertical;
+    private GPUImage.ScaleType mScaleType = GPUImage.ScaleType.CENTER_CROP;
 
     // 用来缓存当前摄像头的信息，这里假设了一个camera的实例的预览大小一旦设置了，就不会再变
-    ICameraLoader mCacheCamera = null;
-    Point mCachePrevSize;
+    private ICameraLoader mCacheCamera = null;
+    private Point mCachePrevSize;
 
-    RsYuv mRsYuv;
-    final FloatBuffer mNormalCubeBuffer;
-    final FloatBuffer mNormalTextureFlipBuffer;
+    private RsYuv mRsYuv;
+    private final FloatBuffer mNormalCubeBuffer;
+    private final FloatBuffer mNormalTextureFlipBuffer;
 
-    boolean mSurfaceCreated = false;                    // surface是否创建了,如果surface没有创建,意味着render线程还没开始执行
+    private boolean mSurfaceCreated = false;       // surface是否创建了,如果surface没有创建,意味着render线程还没开始执行
 
-    int mCameraFrameRate = 30;      // 录制的时候,不好改变摄像头的帧率,所以需要在收到数据的时候丢帧
-    long mFirstFrameTick = -1;
-    long mFrameCount = 0;
+    private int mCameraFrameRate = 30;      // 录制的时候,不好改变摄像头的帧率,所以需要在收到数据的时候丢帧
+    private long mFirstFrameTick = -1;
+    private long mFrameCount = 0;
 
-    FrameRateCollecter mFrameRateCollecter;
+    private FrameRateCollecter mFrameRateCollecter;
 
-    ObjectCacher<CmdItem> mCmdItemCacher = new ObjectCacher<CmdItem>(20) {
+    private ObjectCacher<CmdItem> mCmdItemCacher = new ObjectCacher<CmdItem>(20) {
         @Override
         public CmdItem newInstance() {
             return new CmdItem();
@@ -139,8 +140,8 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
         super();
 
         mSurfaceListener = listener;
-        mRunOnDraw = new LinkedList<CmdItem>();
-        mRunOnDrawEnd = new LinkedList<CmdItem>();
+        mRunOnDraw = new LinkedList<>();
+        mRunOnDrawEnd = new LinkedList<>();
         mGLTextureId = OpenGlUtils.NO_TEXTURE;
 
         mGLCubeBuffer = ByteBuffer.allocateDirect(CUBE.length * 4)
@@ -151,10 +152,10 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         setRotation(Rotation.NORMAL, false, false);
 
-        mNormalCubeBuffer = ByteBuffer.allocateDirect(FilterConstants.CUBE.length * 4)
+        mNormalCubeBuffer = ByteBuffer.allocateDirect(CUBE.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
-        mNormalCubeBuffer.put(FilterConstants.CUBE).position(0);
+        mNormalCubeBuffer.put(CUBE).position(0);
 
         float[] flipTexture = TextureRotationUtil.getRotation(Rotation.NORMAL, false, true);
         mNormalTextureFlipBuffer = ByteBuffer.allocateDirect(flipTexture.length * 4)
@@ -206,7 +207,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
         }
     }
 
-    public void onSurfaceDestroyed() {
+    private void onSurfaceDestroyed() {
         OLog.i(TAG, "onSurfaceDestroyed %b", null != mFilter);
 
         if (null != mFilter) {
@@ -288,18 +289,18 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
         }
     }
 
-    void resetRsSize(int width, int height) {
+    private void resetRsSize(int width, int height) {
         if (null != mRsYuv) {
             mRsYuv.reset(width, height);
         }
     }
 
-    void deleteImageInternal() {
+    private void deleteImageInternal() {
         GLES20.glDeleteTextures(1, new int[]{mGLTextureId}, 0);
         mGLTextureId = OpenGlUtils.NO_TEXTURE;
     }
 
-    void processFrame(final byte[] data, final ICameraLoader cameraLoader) {
+    private void processFrame(final byte[] data, final ICameraLoader cameraLoader) {
         if (mImageWidth != mCachePrevSize.x || mImageHeight != mCachePrevSize.y) {
             mImageWidth = mCachePrevSize.x;
             mImageHeight = mCachePrevSize.y;
@@ -314,7 +315,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
         mGLRgbBuffer.clear();
     }
 
-    void setFilterInternal(final GPUImageFilterGroupBase filter) {
+    private void setFilterInternal(final GPUImageFilterGroupBase filter) {
         final GPUImageFilterGroupBase oldFilter = mFilter;
         mFilter = filter;
         if (oldFilter != null) {
@@ -325,7 +326,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
         mFilter.onOutputSizeChanged(mOutputWidth, mOutputHeight);
     }
 
-    void setImageBitmapInternal(final Bitmap bitmap, final boolean recycle) {
+    private void setImageBitmapInternal(final Bitmap bitmap, final boolean recycle) {
         Bitmap resizedBitmap = null;
         if (bitmap.getWidth() % 2 == 1) {
             resizedBitmap = Bitmap.createBitmap(bitmap.getWidth() + 1, bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -403,8 +404,6 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
     public void setScaleType(GPUImage.ScaleType scaleType) {
         mScaleType = scaleType;
     }
-
-    GLSurfaceView mSurfaceView;
 
     public void setGlSurfaceView(GLSurfaceView surfaceView) {
         mSurfaceView = surfaceView;
@@ -488,7 +487,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
         return mRotation;
     }
 
-    void runOnDraw(@RenderCmd int cmdId, Object param1, Object param2) {
+    private void runOnDraw(@RenderCmd int cmdId, Object param1, Object param2) {
         CmdItem item = mCmdItemCacher.obtain();
         item.cmdId = cmdId;
         item.param1 = param1;
@@ -499,7 +498,7 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
         }
     }
 
-    void runOnDrawEnd(@RenderCmd int cmdId, Object param1, Object param2) {
+    private void runOnDrawEnd(@RenderCmd int cmdId, Object param1, Object param2) {
         CmdItem item = mCmdItemCacher.obtain();
         item.cmdId = cmdId;
         item.param1 = param1;
@@ -520,15 +519,8 @@ public class GPUImageRenderer implements GLSurfaceView.Renderer, CameraPreviewCa
 
     public void destroySurface() {
         OLog.i(TAG, "destroySurface %b", null != mSurfaceView);
-        if (null == mSurfaceView) {
-            return;
+        if (mSurfaceView != null) {
+            mSurfaceView.queueEvent(this::onSurfaceDestroyed);
         }
-
-        mSurfaceView.queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                onSurfaceDestroyed();
-            }
-        });
     }
 }

@@ -35,7 +35,6 @@ public class OpenGlUtils {
     private static final String TAG = "OpenGlUtils";
 
     public static final int NO_TEXTURE = -1;
-    public static final float[] CUBE = {-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f};
 
     public static int loadTexture(final Bitmap img, final int usedTexId) {
         return loadTexture(img, usedTexId, true);

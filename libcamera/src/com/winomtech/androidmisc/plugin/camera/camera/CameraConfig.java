@@ -2,8 +2,7 @@ package com.winomtech.androidmisc.plugin.camera.camera;
 
 /**
  * @author kevinhuang
- * @since 2017-02-20
- */
+  */
 public enum CameraConfig {
     FullScreen(720, 1280, 30),
     WideScreen(960, 1280, 30),
@@ -12,9 +11,9 @@ public enum CameraConfig {
     VoIP(720, 1280, 15),
     VoIPForLowPhone(480, 864, 15);
 
-    int width;
-    int height;
-    int fps;
+    private int width;
+    private int height;
+    private int fps;
 
     CameraConfig(int width, int height, int fps) {
         this.width = width;

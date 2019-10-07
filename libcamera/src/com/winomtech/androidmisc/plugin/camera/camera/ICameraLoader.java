@@ -6,7 +6,6 @@ import com.winomtech.androidmisc.common.utils.Size;
 
 /**
  * @author kevinhuang
- * @since 2017-03-02
  */
 public interface ICameraLoader {
     // 分辨率系数，选取摄像头预览和图片大小的时候，需要与预期值进行比例和差距加权求出差异值，然后取差异最小的

@@ -13,17 +13,16 @@ import java.nio.ByteBuffer;
 
 /**
  * @author kevinhuang
- * @since 2017-03-02
  */
 public class CameraV1Loader implements ICameraLoader, Camera.PreviewCallback {
     private static final String TAG = "CameraV1Loader";
 
-    CameraV1Controller mCameraController;
-    SurfaceTexture mSurfaceTexture = null;
-    ByteBuffer[] mPreviewBufArr;
-    Size mPreviewSize;
+    private CameraV1Controller mCameraController;
+    private SurfaceTexture mSurfaceTexture = null;
+    private ByteBuffer[] mPreviewBufArr;
+    private Size mPreviewSize;
 
-    CameraPreviewCallback mPreviewCallback;
+    private CameraPreviewCallback mPreviewCallback;
 
     public CameraV1Loader(Activity activity, boolean useFrontFace, CameraConfig config) {
         mCameraController = new CameraV1Controller(activity, useFrontFace, config);

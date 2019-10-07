@@ -1,15 +1,9 @@
 package com.winomtech.androidmisc.plugin.camera.filter;
 
 /**
- * @since 2016-07-26
- * @author kevinhuang 
+ * @author kevinhuang
  */
 public class FilterConstants {
-    /**
-     * 最多支持的人数,所有特效的最多人数都不会超过这个
-     */
-    public static final int MAX_FACE_COUNT = 5;
-
     /**
      * 绘制摄像头里面的照片的矩阵
      */

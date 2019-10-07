@@ -26,7 +26,7 @@ import java.nio.FloatBuffer;
 import java.util.LinkedList;
 
 public class GPUImageFilter {
-    final static String TAG = "GPUImageFilter";
+    private final static String TAG = "GPUImageFilter";
 
     public static final String NO_FILTER_VERTEX_SHADER = ""
             + "attribute vec4 position;\n"
@@ -51,45 +51,27 @@ public class GPUImageFilter {
             + "}";
 
     private final LinkedList<Runnable> mRunOnDraw;
-    private String mVertexShader;
-    protected String mFragmentShader;
-    protected int mGLProgId;
+    private final String mVertexShader;
+    private final String mFragmentShader;
+
+    private int mGLProgId;
     protected int mGLAttribPosition;
     protected int mGLUniformTexture;
     protected int mGLAttribTextureCoordinate;
-    public int mOutputWidth;
-    public int mOutputHeight;
-    private boolean mIsInitialized;
-
-    protected int mCoordRangeWidth;
-    protected int mCoordRangeHeight;
-
-    protected boolean mNeedFlip = false;
-    protected boolean mUseFlipBuf = false;
-
-    protected float[] mTextureMatrix;
-    protected boolean mAudioPaused = false;
-
     private int mIsAndroidLocation;
-    private int mSurfaceWidthLocation;
-    private int mSurfaceHeightLocation;
-    private int mNeedFlipLocation;
 
-    protected String mFilterName = null;
-    protected int mParamValue1 = 0;
-    protected int mParamValue2 = 0;
-    protected int mParamValue3 = 0;
+    private int mOutputWidth;
+    private int mOutputHeight;
 
+    private boolean mIsInitialized;
     private long mContextHandle;
-
-    protected double mCurAudioVolume;
 
     public GPUImageFilter() {
         this(NO_FILTER_VERTEX_SHADER, NO_FILTER_FRAGMENT_SHADER);
     }
 
     public GPUImageFilter(final String vertexShader, final String fragmentShader) {
-        mRunOnDraw = new LinkedList<Runnable>();
+        mRunOnDraw = new LinkedList<>();
         mVertexShader = vertexShader;
         mFragmentShader = fragmentShader;
     }
@@ -105,23 +87,12 @@ public class GPUImageFilter {
         return OpenGlUtils.loadProgram(mVertexShader, mFragmentShader);
     }
 
-    public void setNeedFlip(boolean need) {
-        mNeedFlip = need;
-    }
-
-    public void setUseFlipBuffer(boolean useFlipBuf) {
-        mUseFlipBuf = useFlipBuf;
-    }
-
     public void onInit() {
         mGLProgId = loadProgram();
         mGLAttribPosition = GLES20.glGetAttribLocation(mGLProgId, "position");
         mGLUniformTexture = GLES20.glGetUniformLocation(mGLProgId, "inputImageTexture");
         mGLAttribTextureCoordinate = GLES20.glGetAttribLocation(mGLProgId, "inputTextureCoordinate");
         mIsAndroidLocation = GLES20.glGetUniformLocation(mGLProgId, "isAndroid");
-        mSurfaceWidthLocation = GLES20.glGetUniformLocation(mGLProgId, "surfaceWidth");
-        mSurfaceHeightLocation = GLES20.glGetUniformLocation(mGLProgId, "surfaceHeight");
-        mNeedFlipLocation = GLES20.glGetUniformLocation(mGLProgId, "needFlip");
         mIsInitialized = true;
     }
 
@@ -177,53 +148,23 @@ public class GPUImageFilter {
         GLES20.glDisableVertexAttribArray(mGLAttribPosition);
         GLES20.glDisableVertexAttribArray(mGLAttribTextureCoordinate);
 
-        onPostDraw(textureId);
-
         OpenGlUtils.bindTexture(getTarget(), 0);
     }
 
-    public void onPreDraw() {}
-
-    protected void onPostDraw(final int textureId) {}
+    public void onPreDraw() {
+    }
 
     protected void onDrawArraysPre(int textureId) {
         if (-1 != mIsAndroidLocation) {
             setInteger(mIsAndroidLocation, 1);
         }
-        if (-1 != mSurfaceWidthLocation) {
-            setInteger(mSurfaceWidthLocation, mOutputWidth);
-        }
-        if (-1 != mSurfaceHeightLocation) {
-            setInteger(mSurfaceHeightLocation, mOutputHeight);
-        }
-        if (-1 != mNeedFlipLocation) {
-            setInteger(mNeedFlipLocation, mNeedFlip ? 1 : 0);
-        }
-    }
-
-    public void resetState() {
-    }
-
-    /**
-     * 该filter对象是否可以重用
-     * 如果可重用,即调用{@link GPUImageFilter#destroy()}之后,再调用{@link GPUImageFilter#init()}就能重用.
-     * 如果不能重用,则需要自己重新初始化一个filter.
-     */
-    public boolean isResuable() {
-        return true;
-    }
-
-    public int getMaxFaceCount() {
-        return FilterConstants.MAX_FACE_COUNT;
     }
 
     protected void runPendingOnDrawTasks() {
         // 将当前要运行的拷贝到新的数组,然后再开始执行,防止执行的里面再次添加
-        LinkedList<Runnable> runList = new LinkedList<>();
+        LinkedList<Runnable> runList;
         synchronized (mRunOnDraw) {
-            for (Runnable runnable : mRunOnDraw) {
-                runList.add(runnable);
-            }
+            runList = new LinkedList<>(mRunOnDraw);
             mRunOnDraw.clear();
         }
 
@@ -240,40 +181,32 @@ public class GPUImageFilter {
         return mGLProgId;
     }
 
-    protected void setInteger(int location, int intValue) {
-        GLES20.glUniform1i(location, intValue);
-    }
-
-    protected void setFloat(int location, float floatValue) {
-        GLES20.glUniform1f(location, floatValue);
-    }
-
-    protected void setFloatVec2(int location, float[] arrayValue) {
-        GLES20.glUniform2fv(location, 1, FloatBuffer.wrap(arrayValue));
-    }
-
-    protected void setPoint(int location, PointF point) {
-        float[] vec2 = new float[2];
-        vec2[0] = point.x;
-        vec2[1] = point.y;
-        GLES20.glUniform2fv(location, 1, vec2, 0);
-    }
-
-    protected void setUniformMatrix4f(int location, float[] matrix) {
-        GLES20.glUniformMatrix4fv(location, 1, false, matrix, 0);
-    }
-
-    protected double distance(float x1, float y1, float x2, float y2) {
-        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-    }
-
     protected void runOnDraw(final Runnable runnable) {
         synchronized (mRunOnDraw) {
             mRunOnDraw.addLast(runnable);
         }
     }
 
-    public void setTexutreTransform(float[] matrix) {
-        mTextureMatrix = matrix;
+    protected void setInteger(int location, int intValue) {
+        GLES20.glUniform1i(location, intValue);
+    }
+
+    protected static void setFloat(int location, float floatValue) {
+        GLES20.glUniform1f(location, floatValue);
+    }
+
+    protected static void setFloatVec2(int location, float[] arrayValue) {
+        GLES20.glUniform2fv(location, 1, FloatBuffer.wrap(arrayValue));
+    }
+
+    protected static void setPoint(int location, PointF point) {
+        float[] vec2 = new float[2];
+        vec2[0] = point.x;
+        vec2[1] = point.y;
+        GLES20.glUniform2fv(location, 1, vec2, 0);
+    }
+
+    protected static void setUniformMatrix4f(int location, float[] matrix) {
+        GLES20.glUniformMatrix4fv(location, 1, false, matrix, 0);
     }
 }

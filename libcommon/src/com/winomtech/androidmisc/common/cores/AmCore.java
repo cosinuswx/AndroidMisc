@@ -7,8 +7,7 @@ import java.util.Map;
 
 /**
  * @author kevinhuang
- * @since 2017-03-01
- */
+  */
 public class AmCore {
     private static AmCore theCore = null;
 

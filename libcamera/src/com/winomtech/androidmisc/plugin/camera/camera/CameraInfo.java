@@ -2,20 +2,19 @@ package com.winomtech.androidmisc.plugin.camera.camera;
 
 /**
  * @author kevinhuang
- * @since 2015-03-24
  * 用来保存当前机器摄像头的相关信息
  */
 public class CameraInfo {
 	/**
 	 * 前面这一段内容在{@link CameraCompat#initCameraInfo()}的时候一定被会初始化
 	 **/
-	int			mCameraNum = 1;
-	boolean		mIsHasFrontCamera = false;
-	boolean 	mIsHasBackCamera = false;
-	int			mFrontId = 0;
-	int			mBackId = 0;
-	int 		mFrontPreRotate = 0;
-	int 		mBackPreRotate = 0;
+    private int mCameraNum = 1;
+    private boolean mIsHasFrontCamera = false;
+    private boolean mIsHasBackCamera = false;
+    private int mFrontId = 0;
+    private int mBackId = 0;
+    private int mFrontPreRotate = 0;
+    private int mBackPreRotate = 0;
 
 	public int getCameraNum() {
 		return mCameraNum;

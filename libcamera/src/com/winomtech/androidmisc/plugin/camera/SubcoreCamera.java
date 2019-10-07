@@ -10,12 +10,11 @@ import com.winomtech.androidmisc.plugin.camera.camera.CameraCompat;
 
 /**
  * @author kevinhuang
- * @since 2016-12-15
- */
+  */
 public class SubcoreCamera implements ISubCore {
-    static final String TAG = "SubcoreCamera";
+    private static final String TAG = "SubcoreCamera";
 
-    static SubcoreCamera thiz = null;
+    private static SubcoreCamera thiz = null;
 
     public static SubcoreCamera getCore() {
         if (null == thiz) {

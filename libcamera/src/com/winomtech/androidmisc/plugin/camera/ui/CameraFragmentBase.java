@@ -24,8 +24,7 @@ import com.winomtech.androidmisc.plugin.camera.filter.GPUImageFilterGroupBase;
 
 /**
  * @author kevinhuang
- * @since 2017-03-02
- */
+  */
 public abstract class CameraFragmentBase extends Fragment implements GPUImageView.OnGestureListener {
     private static final String TAG = "CameraFragment";
 
@@ -40,9 +39,9 @@ public abstract class CameraFragmentBase extends Fragment implements GPUImageVie
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = (ViewGroup) inflater.inflate(R.layout.layout_camera_fragment, container, false);
-        mRlGPUImageViewCtn = (RelativeLayout) mRootView.findViewById(R.id.rl_activity_gpuimage_container);
+        mRlGPUImageViewCtn = mRootView.findViewById(R.id.rl_activity_gpuimage_container);
 
-        mBtnLight = (Button) mRootView.findViewById(R.id.btn_light);
+        mBtnLight = mRootView.findViewById(R.id.btn_light);
         mBtnLight.setOnClickListener(mLightListener);
 
         return mRootView;
@@ -74,7 +73,7 @@ public abstract class CameraFragmentBase extends Fragment implements GPUImageVie
                 ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    View.OnClickListener mLightListener = new View.OnClickListener() {
+    private View.OnClickListener mLightListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -87,7 +86,7 @@ public abstract class CameraFragmentBase extends Fragment implements GPUImageVie
         }
     };
 
-    OnSurfaceListener mSurfaceListener = new OnSurfaceListener() {
+    private OnSurfaceListener mSurfaceListener = new OnSurfaceListener() {
 
         @Override
         public void onSurfaceCreated() {
@@ -125,7 +124,7 @@ public abstract class CameraFragmentBase extends Fragment implements GPUImageVie
         }
     };
 
-    protected void removeGPUImageView() {
+    private void removeGPUImageView() {
         if (null != mGPUImageView) {
             mGPUImageView.onPause();
             mRlGPUImageViewCtn.removeView(mGPUImageView);

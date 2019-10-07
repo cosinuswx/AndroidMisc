@@ -33,13 +33,15 @@ import java.util.List;
  * other.
  */
 public abstract class GPUImageFilterGroupBase extends GPUImageFilter {
-    // 利用双FrameBuffer循环使用应该就可以了,不需要这么多FrameBuffer
-    int[] mDoubleFBBuffer;
-    int[] mDoubleFBTexture;
+    private static final String TAG = "GPUImageFilterGroupBase";
 
-    final FloatBuffer mGLCubeBuffer;
-    final FloatBuffer mGLTextureBuffer;
-    final FloatBuffer mGLTextureFlipBuffer;
+    // 利用双FrameBuffer循环使用应该就可以了,不需要这么多FrameBuffer
+    private int[] mDoubleFBBuffer;
+    private int[] mDoubleFBTexture;
+
+    private final FloatBuffer mGLCubeBuffer;
+    private final FloatBuffer mGLTextureBuffer;
+    private final FloatBuffer mGLTextureFlipBuffer;
 
     /**
      * Instantiates a new GPUImageFilterGroup with no filters.
@@ -155,13 +157,10 @@ public abstract class GPUImageFilterGroupBase extends GPUImageFilter {
             }
 
             if (i == 0) {
-                filter.setUseFlipBuffer(false);
                 filter.onDraw(previousTexture, cubeBuffer, textureBuffer);
             } else if (i == size - 1) {
-                filter.setUseFlipBuffer((size % 2 == 0));
                 filter.onDraw(previousTexture, mGLCubeBuffer, (size % 2 == 0) ? mGLTextureFlipBuffer : mGLTextureBuffer);
             } else {
-                filter.setUseFlipBuffer(false);
                 filter.onDraw(previousTexture, mGLCubeBuffer, mGLTextureBuffer);
             }
 
@@ -171,14 +170,6 @@ public abstract class GPUImageFilterGroupBase extends GPUImageFilter {
             } else {
                 GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
             }
-        }
-    }
-
-    @Override
-    public void setTexutreTransform(float[] matrix) {
-        super.setTexutreTransform(matrix);
-        for (GPUImageFilter filter : getRenderFilters()) {
-            filter.setTexutreTransform(matrix);
         }
     }
 }

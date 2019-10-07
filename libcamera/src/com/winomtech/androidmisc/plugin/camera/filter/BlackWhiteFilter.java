@@ -2,8 +2,7 @@ package com.winomtech.androidmisc.plugin.camera.filter;
 
 /**
  * @author kevinhuang
- * @since 2017-03-02
- */
+  */
 public class BlackWhiteFilter extends GPUImageFilter {
     private final static String BLACK_WHITE_FRAGMENT_SHADER = ""
             + "varying highp vec2 textureCoordinate;\n"

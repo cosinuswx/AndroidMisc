@@ -5,8 +5,7 @@ import com.winomtech.androidmisc.common.plugin.IPlugin;
 
 /**
  * @author kevinhuang
- * @since 2016-12-15
- */
+  */
 public class Plugin implements IPlugin {
 
     @Override

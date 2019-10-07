@@ -32,7 +32,7 @@ import java.nio.Buffer;
 import java.nio.IntBuffer;
 
 public class OpenGlUtils {
-    static final String TAG = "OpenGlUtils";
+    private static final String TAG = "OpenGlUtils";
 
     public static final int NO_TEXTURE = -1;
     public static final float[] CUBE = {-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f};

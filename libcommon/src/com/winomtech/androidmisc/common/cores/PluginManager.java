@@ -12,8 +12,7 @@ import java.util.Map;
 
 /**
  * @author kevinhuang
- * @since 2015-03-07
- */
+  */
 public class PluginManager {
     private static final String TAG = "PluginManager";
 

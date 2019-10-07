@@ -7,13 +7,13 @@ import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.renderscript.Type;
 
 public class RsYuv {
-	int mHeight = 0;
-	int mWidth = 0;
+	private int mHeight = 0;
+    private int mWidth = 0;
 
-	RenderScript mRS;
-	Allocation mAllocationOut;
-	Allocation mAllocationIn;
-	ScriptIntrinsicYuvToRGB mYuv;
+    private RenderScript mRS;
+    private Allocation mAllocationOut;
+    private Allocation mAllocationIn;
+    private ScriptIntrinsicYuvToRGB mYuv;
 
 	public RsYuv(RenderScript rs) {
 		mRS = rs;

@@ -1,3 +1,3 @@
 [submodule "libmediaengine"]
 	path = libmediaengine
-	url = git@github.com:kevin-nazgul/libmediaengine.git
+	url = https://github.com/cosinuswx/libmediaengine.git

@@ -40,7 +40,8 @@ public class FrameRateCollecter {
         mLastFrameTick = tick;
 
         if (tick - mLastOutputTIck >= Constants.MS_PER_SECOND) {
-            OLog.v(TAG, "name: %s fps: %.1f", mName, (mFrameCount * Constants.MS_PER_SECOND / (tick - mStartTick)));
+            OLog.v(TAG, "name: %s fps: %.1f", mName,
+                    (mFrameCount * Constants.MS_PER_SECOND * 1.0f / (tick - mStartTick)));
             mLastOutputTIck = tick;
         }
     }
